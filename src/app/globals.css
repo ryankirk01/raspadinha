@@ -119,8 +119,8 @@
     background: linear-gradient(
       to right,
       hsl(var(--foreground)) 20%,
-      hsl(var(--primary)) 40%,
-      hsl(var(--primary)) 60%,
+      hsl(var(--accent)) 40%,
+      hsl(var(--accent)) 60%,
       hsl(var(--foreground)) 80%
     );
     background-size: 200% auto;
