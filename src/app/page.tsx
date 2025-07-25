@@ -9,6 +9,7 @@ import { Testimonial } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
 import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
+import { LockKeyhole } from 'lucide-react';
 
 const testimonials = [
   {
@@ -71,7 +72,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={cn("w-full max-w-lg transition-all duration-500", isScratchComplete ? "opacity-100 scale-100" : "opacity-50 scale-90")}>
+        <div className={cn("w-full max-w-lg transition-all duration-500 flex flex-col items-center gap-4", isScratchComplete ? "opacity-100 scale-100" : "opacity-50 scale-90")}>
           <a 
             href="https://raspadinha-gold.com/?code=RHY4R1BS5S"
             target="_blank" 
@@ -92,6 +93,15 @@ export default function Home() {
               GARANTIR MEU PRÊMIO AGORA 🎯
             </Button>
           </a>
+
+          {isScratchComplete && (
+            <div className="flex items-center gap-2 text-sm text-foreground/70 animate-fadeIn" style={{animationDelay: '0.2s'}}>
+                <LockKeyhole className="w-4 h-4 text-primary" />
+                <p>
+                  <strong>Para liberar seu prêmio:</strong> Cadastre-se e realize seu primeiro depósito.
+                </p>
+            </div>
+          )}
         </div>
 
         <div className="w-full pt-16">
