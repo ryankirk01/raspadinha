@@ -27,6 +27,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const isDrawing = useRef(false);
   const hasCalledOnComplete = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastCheck = useRef(0);
 
   const particles = useRef<Particle[]>([]);
 
@@ -89,7 +90,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const data = imageData.data;
     let transparentPixels = 0;
     for (let i = 3; i < data.length; i += 4) {
-      if (data[i] === 0) { // Check for fully transparent pixels
+      if (data[i] < 128) {
         transparentPixels++;
       }
     }
@@ -97,7 +98,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const percentage = (transparentPixels / (W * H)) * 100;
     onUpdate(percentage);
 
-    if (percentage > 60) {
+    if (percentage > 40) { // Reduced threshold for faster reveal
       setIsRevealed(true);
       if (!hasCalledOnComplete.current) {
         onComplete();
@@ -118,7 +119,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     e.preventDefault();
     if (isDrawing.current) {
         isDrawing.current = false;
-        checkRevealed();
+        checkRevealed(); // Final check on mouse up
     }
   };
 
@@ -135,6 +136,12 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
 
     scratch(ctx, x, y);
+
+    const now = Date.now();
+    if (now - lastCheck.current > 100) { // Check every 100ms
+        lastCheck.current = now;
+        checkRevealed();
+    }
   };
   
   useEffect(() => {
