@@ -60,7 +60,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     ctx.globalCompositeOperation = 'destination-out';
     
     if (typeof Audio !== 'undefined') {
-      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/11/22/audio_7900a8cac3.mp3');
+      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2021/08/04/audio_c6f2b61062.mp3');
       audioRef.current.preload = 'auto';
     }
 
@@ -146,7 +146,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     canvas.width = W;
     canvas.height = H;
 
-    const particleCount = 400; 
+    const particleCount = 500; 
     const colors = ["#FFD700", "#FFA500", "#FFC400", "#FFFFFF", "#FFD700"];
     particles.current = [];
 
@@ -180,9 +180,10 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
             p.life -= 1;
             
             const alpha = Math.max(0, p.life / p.initialLife);
+            const radius = Math.max(0, p.radius * (p.life / p.initialLife));
 
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius * (p.life / p.initialLife), 0, Math.PI * 2, false);
+            ctx.arc(p.x, p.y, radius, 0, Math.PI * 2, false);
             ctx.fillStyle = `${p.color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
             ctx.fill();
 
@@ -215,7 +216,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
 
-        <div className="absolute inset-0 bg-black/70 z-10"></div>
+        <div className="absolute inset-0 bg-black/80 z-10"></div>
 
         <div className={cn(
           "text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700",
