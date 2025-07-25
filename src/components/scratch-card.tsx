@@ -182,9 +182,9 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
         <div className="text-center z-10 text-background flex flex-col items-center gap-2 p-4 transition-all duration-700">
             <Gift className="w-12 h-12 text-yellow-300 drop-shadow-lg" />
             <h3 className="text-2xl font-black text-white text-glow">
-                VOCÊ GANHOU!
+                VOCÊ GANHOU R$100!
             </h3>
-            <p className="text-sm font-bold text-yellow-200">Raspe para revelar seu prêmio</p>
+            <p className="text-sm font-bold text-yellow-200">Clique no botão abaixo para resgatar</p>
         </div>
 
 
