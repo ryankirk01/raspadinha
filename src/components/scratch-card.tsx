@@ -61,7 +61,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     ctx.globalCompositeOperation = 'destination-out';
     
     if (typeof Audio !== 'undefined') {
-      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2021/08/04/audio_c6f2b61062.mp3');
+      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_19d906d09a.mp3');
       audioRef.current.preload = 'auto';
     }
 
@@ -98,7 +98,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const percentage = (transparentPixels / (W * H)) * 100;
     onUpdate(percentage);
 
-    if (percentage > 40) { // Reduced threshold for faster reveal
+    if (percentage > 60) {
       setIsRevealed(true);
       if (!hasCalledOnComplete.current) {
         onComplete();
