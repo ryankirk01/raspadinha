@@ -30,6 +30,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const hasCalledOnComplete = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastCheck = useRef(0);
+  const confettiTriggered = useRef(false);
 
   const particles = useRef<Particle[]>([]);
 
@@ -91,7 +92,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 35, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 25, 0, 2 * Math.PI, true);
     ctx.fill();
   }, []);
 
@@ -170,7 +171,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   };
   
   useEffect(() => {
-    if (!isRevealed) return;
+    if (!isRevealed || confettiTriggered.current) return;
+    confettiTriggered.current = true;
 
     const canvas = confettiCanvasRef.current;
     if (!canvas) return;
@@ -304,3 +306,6 @@ export function ScratchProgress({ progress }: { progress: number }) {
     </div>
   )
 }
+
+
+    

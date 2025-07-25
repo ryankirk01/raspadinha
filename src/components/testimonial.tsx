@@ -60,7 +60,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
 
   const scratch = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 20, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 15, 0, 2 * Math.PI, true);
     ctx.fill();
   };
 
@@ -118,7 +118,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
 
   return (
     <Card 
-      className="w-[280px] h-[140px] mx-auto bg-card/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30"
+      className="w-[280px] h-[140px] mx-auto bg-card/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30 touch-none"
     >
       <CardContent 
         className="relative w-full h-full p-0 flex items-center justify-center text-center"
@@ -153,3 +153,5 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     </Card>
   );
 }
+
+    
