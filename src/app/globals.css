@@ -5,27 +5,27 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
+    --background: 252 10% 11%; /* #17161A */
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 252 10% 11%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 252 10% 11%;
     --popover-foreground: 0 0% 98%;
-    --primary: 48 96% 54%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 295 82% 56%; /* #BE29EC */
+    --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 300 85% 55%;
+    --accent: 194 82% 56%; /* #29D0EC */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 48 96% 54%;
-    --chart-1: 48 96% 54%;
-    --chart-2: 300 85% 55%;
+    --ring: 295 82% 56%;
+    --chart-1: 295 82% 56%;
+    --chart-2: 194 82% 56%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
@@ -33,27 +33,27 @@
   }
  
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 252 10% 11%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 252 10% 11%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 252 10% 11%;
     --popover-foreground: 0 0% 98%;
-    --primary: 48 96% 54%;
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 295 82% 56%;
+    --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 300 85% 55%;
+    --accent: 194 82% 56%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 48 96% 54%;
-    --chart-1: 48 96% 54%;
-    --chart-2: 300 85% 55%;
+    --ring: 295 82% 56%;
+    --chart-1: 295 82% 56%;
+    --chart-2: 194 82% 56%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
@@ -87,6 +87,12 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes prize-reveal-2 {
+  0% { transform: translateY(-20px) scale(0.9); opacity: 0; }
+  60% { transform: translateY(0) scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700; }
 }
 
 @keyframes prize-reveal {
@@ -140,7 +146,7 @@
 }
 
 .animate-prize-reveal {
-  animation: prize-reveal 0.8s ease-out forwards;
+  animation: prize-reveal-2 0.8s ease-out forwards;
 }
 
 .animate-pulse-strong {

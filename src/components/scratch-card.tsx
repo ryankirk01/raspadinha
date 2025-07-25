@@ -222,7 +222,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
 
   return (
-    <Card className="w-[400px] h-[200px] bg-gradient-to-br from-yellow-300 via-primary to-amber-600 p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]">
+    <Card className="w-[400px] h-[200px] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)_/_0.5)_0%,_hsl(var(--background))_70%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]">
       <CardContent className="relative w-full h-full p-0 flex items-center justify-center">
         
         <canvas
@@ -230,18 +230,16 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
 
-        <div className="absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0)_80%)]"></div>
-
         <div className={cn(
-          "text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700",
+          "text-center z-10 flex flex-col items-center gap-1 p-4",
            isRevealed && "animate-prize-reveal"
         )}>
-            <Gift className="w-12 h-12 text-yellow-300 drop-shadow-lg" />
-            <h3 className="text-2xl font-black text-white text-glow animate-pulse-strong">
-                VOCÊ GANHOU R$100!
+            <Gift className="w-12 h-12 text-yellow-300 drop-shadow-[0_2px_5px_rgba(255,215,0,0.7)]" />
+            <h3 className="text-xl font-bold uppercase tracking-wider text-white/90">
+                Você Ganhou
             </h3>
-            <p className="text-xs font-bold text-yellow-200 px-4">
-                Cadastre-se e faça seu primeiro depósito para resgatar seu prêmio.
+            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-amber-500" style={{ textShadow: '0 0 15px rgba(255, 215, 0, 0.5)' }}>
+                R$100!
             </p>
         </div>
 
@@ -256,7 +254,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
           onMouseUp={handleEnd}
           onMouseLeave={handleEnd}
           onTouchStart={handleStart}
-          onTouchMove={handleMove}
+  onTouchMove={handleMove}
           onTouchEnd={handleEnd}
         />
       </CardContent>
