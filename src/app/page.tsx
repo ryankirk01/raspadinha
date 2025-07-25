@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Particles } from '@/components/particles';
 import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
-import { Testimonial } from '@/components/testimonial';
+import { TestimonialScratchCard } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
 import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
@@ -135,7 +135,7 @@ export default function Home() {
               {testimonials.map((testimonial, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                    <div className="p-1">
-                    <Testimonial {...testimonial} />
+                    <TestimonialScratchCard {...testimonial} />
                    </div>
                 </CarouselItem>
               ))}
