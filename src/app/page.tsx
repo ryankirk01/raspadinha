@@ -11,6 +11,9 @@ import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/componen
 import { cn } from '@/lib/utils';
 import { Rocket } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
+
 
 const testimonials = [
   {
@@ -24,6 +27,14 @@ const testimonials = [
   {
     name: 'Carlos L.',
     prize: 'Fácil e rápido, R$150 na conta!',
+  },
+  {
+    name: 'Ana B.',
+    prize: 'Que sorte, R$750 logo de cara!',
+  },
+  {
+    name: 'Pedro M.',
+    prize: 'R$300! Já quero raspar de novo.',
   },
 ];
 
@@ -107,13 +118,29 @@ export default function Home() {
 
         <div className="w-full pt-16">
           <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="animate-fadeIn" style={{ animationDelay: `${1 + index * 0.2}s` }}>
-                <Testimonial {...testimonial} />
-              </div>
-            ))}
-          </div>
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+             plugins={[
+              Autoplay({
+                delay: 2000,
+                stopOnInteraction: false,
+              }),
+            ]}
+            className="w-full max-w-xs sm:max-w-xl md:max-w-2xl lg:max-w-4xl"
+          >
+            <CarouselContent>
+              {testimonials.map((testimonial, index) => (
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                   <div className="p-1">
+                    <Testimonial {...testimonial} />
+                   </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </div>
 
         <footer className="w-full flex flex-col items-center space-y-4 pt-12 border-t border-white/10 animate-fadeIn" style={{ animationDelay: '1.6s' }}>
