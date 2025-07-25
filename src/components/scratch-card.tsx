@@ -99,9 +99,11 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
     if (percentage > 70) {
       setIsRevealed(true);
-      onComplete();
-      playSound();
-      hasCalledOnComplete.current = true;
+      if (!hasCalledOnComplete.current) {
+        onComplete();
+        playSound();
+        hasCalledOnComplete.current = true;
+      }
     }
   }, [onComplete, onUpdate]);
 
@@ -133,8 +135,6 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
 
     scratch(ctx, x, y);
-    // Debounce or throttle this check if performance is an issue
-    // For now, we removed it from here to call only on handleEnd
   };
   
   useEffect(() => {
@@ -148,7 +148,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     canvas.width = W;
     canvas.height = H;
 
-    const particleCount = 500; 
+    const particleCount = 700; 
     const colors = ["#FFD700", "#FFA500", "#FFC400", "#FFFFFF", "#FFD700"];
     particles.current = [];
 
@@ -181,16 +181,17 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
             p.vy += p.gravity;
             p.life -= 1;
             
-            const alpha = Math.max(0, p.life / p.initialLife);
-            const radius = Math.max(0, p.radius * (p.life / p.initialLife));
+            const lifeRatio = Math.max(0, p.life / p.initialLife);
+            const radius = p.radius * lifeRatio;
 
             if (radius > 0) {
               ctx.beginPath();
+              const alpha = lifeRatio;
+              ctx.globalAlpha = alpha;
               ctx.arc(p.x, p.y, radius, 0, Math.PI * 2, false);
-              const color = p.color;
-              const alphaHex = Math.round(alpha * 255).toString(16).padStart(2, '0');
-              ctx.fillStyle = `${color}${alphaHex}`;
+              ctx.fillStyle = p.color;
               ctx.fill();
+              ctx.globalAlpha = 1;
             }
 
             if (p.life <= 0) {
@@ -229,7 +230,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
            isRevealed && "animate-prize-reveal"
         )}>
             <Gift className="w-12 h-12 text-yellow-300 drop-shadow-lg" />
-            <h3 className="text-2xl font-black text-white text-glow">
+            <h3 className="text-2xl font-black text-white text-glow animate-pulse-strong">
                 VOCÊ GANHOU R$100!
             </h3>
             <p className="text-xs font-bold text-yellow-200 px-4">
