@@ -81,7 +81,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const checkRevealed = useCallback(() => {
     const canvas = scratchCanvasRef.current;
-    if (!canvas) return;
+    if (!canvas || hasCalledOnComplete.current) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -89,7 +89,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const data = imageData.data;
     let transparentPixels = 0;
     for (let i = 3; i < data.length; i += 4) {
-      if (data[i] < 128) {
+      if (data[i] === 0) { // Check for fully transparent pixels
         transparentPixels++;
       }
     }
@@ -97,13 +97,14 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const percentage = (transparentPixels / (W * H)) * 100;
     onUpdate(percentage);
 
-    if (percentage > 70 && !hasCalledOnComplete.current) {
+    if (percentage > 70) {
       setIsRevealed(true);
       onComplete();
       playSound();
       hasCalledOnComplete.current = true;
     }
   }, [onComplete, onUpdate]);
+
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -132,7 +133,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
 
     scratch(ctx, x, y);
-    checkRevealed();
+    // Debounce or throttle this check if performance is an issue
+    // For now, we removed it from here to call only on handleEnd
   };
   
   useEffect(() => {
@@ -182,10 +184,14 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
             const alpha = Math.max(0, p.life / p.initialLife);
             const radius = Math.max(0, p.radius * (p.life / p.initialLife));
 
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, radius, 0, Math.PI * 2, false);
-            ctx.fillStyle = `${p.color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
-            ctx.fill();
+            if (radius > 0) {
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, radius, 0, Math.PI * 2, false);
+              const color = p.color;
+              const alphaHex = Math.round(alpha * 255).toString(16).padStart(2, '0');
+              ctx.fillStyle = `${color}${alphaHex}`;
+              ctx.fill();
+            }
 
             if (p.life <= 0) {
               particles.current.splice(index, 1);

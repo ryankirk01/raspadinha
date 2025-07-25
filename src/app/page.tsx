@@ -45,7 +45,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden p-4">
-      <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 500 : 200} />
+      <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 500 : 150} />
       
       <main className="z-10 flex flex-col items-center justify-center w-full max-w-4xl text-center space-y-8 md:space-y-12 py-16">
         <div className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
@@ -54,7 +54,7 @@ export default function Home() {
 
         <div className="space-y-4 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
           <h1 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter title-shine">
-            Raspe e Ganhe até <span className="text-primary text-glow">R$10.000!</span>
+             Raspe e Ganhe até <span className="text-primary text-glow">R$10.000!</span>
           </h1>
           <p className="text-lg md:text-xl text-foreground/80">
             Sua sorte está a um toque de distância. Raspe agora!
