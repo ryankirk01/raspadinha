@@ -9,7 +9,8 @@ import { Testimonial } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
 import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
-import { LockKeyhole } from 'lucide-react';
+import { Rocket } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const testimonials = [
   {
@@ -94,10 +95,13 @@ export default function Home() {
               GARANTIR MEU PRÊMIO AGORA 🎯
             </Button>
           </a>
-            <p className="text-center text-sm sm:text-base text-foreground/80 mt-2 flex items-center gap-2">
-              <LockKeyhole className="w-4 h-4 text-primary shrink-0" />
-              <strong>Para liberar seu prêmio:</strong> Cadastre-se e realize seu primeiro depósito.
-            </p>
+            <Alert className="max-w-md text-left bg-primary/10 border-primary/30">
+              <Rocket className="h-5 w-5 text-primary" />
+              <AlertTitle className="font-bold text-primary">ÚLTIMO PASSO PARA O SAQUE!</AlertTitle>
+              <AlertDescription className="text-foreground/80">
+                Realize seu cadastro e primeiro depósito para liberar o prêmio.
+              </AlertDescription>
+            </Alert>
         </div>
 
 
