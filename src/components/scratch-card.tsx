@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from 'react';
@@ -29,7 +30,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
   const W = 350;
   const H = 150;
 
-  // Initialize scratch surface
+  // Initialize scratch surface and audio
   useEffect(() => {
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
@@ -51,8 +52,10 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     ctx.globalCompositeOperation = 'destination-out';
     
     // Preload audio
-    audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_2b68551ada.mp3');
-    audioRef.current.preload = 'auto';
+    if (typeof Audio !== 'undefined') {
+      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_2b68551ada.mp3');
+      audioRef.current.preload = 'auto';
+    }
 
   }, []);
   
@@ -61,6 +64,13 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     ctx.arc(x, y, 25, 0, 2 * Math.PI, true);
     ctx.fill();
   }, []);
+
+  const playSound = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(error => console.error("Audio play failed:", error));
+    }
+  }
 
   const checkRevealed = useCallback(() => {
     if (isRevealed || hasCalledOnComplete.current) return;
@@ -83,7 +93,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
       setIsRevealed(true);
       if (!hasCalledOnComplete.current) {
         onComplete();
-        audioRef.current?.play();
+        playSound();
         hasCalledOnComplete.current = true;
       }
     }
@@ -128,15 +138,15 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     confettiCanvas.width = W;
     confettiCanvas.height = H;
 
-    const maxConfettis = 250; // Increased confetti
-    const colors = ["#fde047", "#f97316", "#facc15", "#ffffff", "#4ade80"]; // Added green
+    const maxConfettis = 250; 
+    const colors = ["#fde047", "#f97316", "#facc15", "#ffffff", "#4ade80"];
     confettiParticles.current = [];
 
     for (let i = 0; i < maxConfettis; i++) {
         confettiParticles.current.push({
             x: Math.random() * W,
             y: Math.random() * H - H,
-            r: Math.random() * 5 + 2, // Bigger particles
+            r: Math.random() * 5 + 2,
             d: Math.random() * maxConfettis,
             color: colors[Math.floor(Math.random() * colors.length)],
             tilt: Math.floor(Math.random() * 10) - 10,
@@ -158,7 +168,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
             ctx.stroke();
 
             p.tiltAngle += 0.07;
-            p.y += (Math.cos(p.d) + 3 + p.r/2) * 0.8; // Faster fall
+            p.y += (Math.cos(p.d) + 3 + p.r/2) * 0.8;
             p.x += Math.sin(p.d);
             p.tilt = (Math.sin(p.d) * 15);
             
@@ -185,6 +195,8 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
           ref={confettiCanvasRef}
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
+
+        <div className="absolute inset-0 bg-black/30 z-10"></div>
 
         <div className="text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700">
             <Gift className="w-10 h-10 text-yellow-300 drop-shadow-lg" />
@@ -214,3 +226,5 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     </Card>
   );
 }
+
+    
