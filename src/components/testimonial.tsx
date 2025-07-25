@@ -60,7 +60,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
 
   const scratch = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 15, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 20, 0, 2 * Math.PI, true);
     ctx.fill();
   };
 
