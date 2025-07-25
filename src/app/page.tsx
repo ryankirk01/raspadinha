@@ -54,11 +54,11 @@ export default function Home() {
         </div>
 
         <div className="space-y-4 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
-          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter title-shine">
-             Raspe e Ganhe até <span className="text-primary text-glow">R$10.000!</span>
+          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter animate-text-glow-pulse">
+            SUA SORTE ESTÁ SELADA
           </h1>
           <p className="text-lg md:text-xl text-foreground/90">
-            Sua sorte está a um toque de distância. Raspe agora!
+            Raspe e ganhe até <span className="font-bold text-primary">R$10.000!</span>
           </p>
         </div>
 
