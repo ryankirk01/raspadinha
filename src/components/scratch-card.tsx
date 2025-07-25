@@ -21,6 +21,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
   const [isRevealed, setIsRevealed] = useState(false);
   const isDrawing = useRef(false);
   const hasCalledOnComplete = useRef(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Confetti state
   const confettiParticles = useRef<ConfettiParticle[]>([]);
@@ -48,6 +49,11 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     ctx.fillRect(0, 0, W, H);
 
     ctx.globalCompositeOperation = 'destination-out';
+    
+    // Preload audio
+    audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_2b68551ada.mp3');
+    audioRef.current.preload = 'auto';
+
   }, []);
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
@@ -77,6 +83,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
       setIsRevealed(true);
       if (!hasCalledOnComplete.current) {
         onComplete();
+        audioRef.current?.play();
         hasCalledOnComplete.current = true;
       }
     }
@@ -121,15 +128,15 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     confettiCanvas.width = W;
     confettiCanvas.height = H;
 
-    const maxConfettis = 150;
-    const colors = ["#fde047", "#f97316", "#facc15", "#ffffff"];
+    const maxConfettis = 250; // Increased confetti
+    const colors = ["#fde047", "#f97316", "#facc15", "#ffffff", "#4ade80"]; // Added green
     confettiParticles.current = [];
 
     for (let i = 0; i < maxConfettis; i++) {
         confettiParticles.current.push({
             x: Math.random() * W,
             y: Math.random() * H - H,
-            r: Math.random() * 4 + 1,
+            r: Math.random() * 5 + 2, // Bigger particles
             d: Math.random() * maxConfettis,
             color: colors[Math.floor(Math.random() * colors.length)],
             tilt: Math.floor(Math.random() * 10) - 10,
@@ -151,7 +158,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
             ctx.stroke();
 
             p.tiltAngle += 0.07;
-            p.y += (Math.cos(p.d) + 3 + p.r/2) * 0.5;
+            p.y += (Math.cos(p.d) + 3 + p.r/2) * 0.8; // Faster fall
             p.x += Math.sin(p.d);
             p.tilt = (Math.sin(p.d) * 15);
             
@@ -179,12 +186,14 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
 
-        <div className="text-center z-10 text-background flex flex-col items-center gap-2 p-4 transition-all duration-700">
-            <Gift className="w-12 h-12 text-yellow-300 drop-shadow-lg" />
-            <h3 className="text-2xl font-black text-white text-glow">
+        <div className="text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700">
+            <Gift className="w-10 h-10 text-yellow-300 drop-shadow-lg" />
+            <h3 className="text-xl font-black text-white text-glow">
                 VOCÊ GANHOU R$100!
             </h3>
-            <p className="text-sm font-bold text-yellow-200">Clique no botão abaixo para resgatar</p>
+            <p className="text-xs font-bold text-yellow-200 px-4">
+                Cadastre-se e faça seu primeiro depósito para resgatar seu prêmio.
+            </p>
         </div>
 
 

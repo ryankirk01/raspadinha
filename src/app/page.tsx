@@ -9,25 +9,20 @@ import { Testimonial } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
 import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
+import { Gift } from 'lucide-react';
 
 const testimonials = [
   {
     name: 'João S.',
     prize: 'Ganhei R$500',
-    avatar: 'https://placehold.co/100x100.png',
-    dataAiHint: 'happy man',
   },
   {
     name: 'Maria P.',
     prize: 'Peguei R$2.000 na primeira tentativa',
-    avatar: 'https://placehold.co/100x100.png',
-    dataAiHint: 'surprised woman',
   },
   {
     name: 'Carlos L.',
     prize: 'Fácil e rápido, R$150 na conta!',
-    avatar: 'https://placehold.co/100x100.png',
-    dataAiHint: 'smiling person',
   },
 ];
 
