@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -29,8 +29,9 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 280, H = 140;
+  const isDrawing = useRef(false);
 
-  const initCanvas = () => {
+  const initCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -51,11 +52,11 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     ctx.fillText('RASPE AQUI', W / 2, H / 2);
 
     ctx.globalCompositeOperation = 'destination-out';
-  };
+  }, []);
 
   useEffect(() => {
     initCanvas();
-  }, []);
+  }, [initCanvas]);
 
   const scratch = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
@@ -63,7 +64,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     ctx.fill();
   };
 
-  const checkRevealed = () => {
+  const checkRevealed = useCallback(() => {
     if (isRevealed) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -83,33 +84,34 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     if (percentage > 50) {
       setIsRevealed(true);
     }
-  };
+  }, [isRevealed]);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const canvas = canvasRef.current;
-    if (!canvas || isRevealed) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    scratch(ctx, x, y);
-    checkRevealed();
+  const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    isDrawing.current = true;
+    handleMove(e);
   };
   
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    if (isDrawing.current) {
+      isDrawing.current = false;
+      checkRevealed();
+    }
+  };
+  
+  const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawing.current || isRevealed) return;
+    e.preventDefault();
     const canvas = canvasRef.current;
-    if (!canvas || isRevealed) return;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
+  
     const rect = canvas.getBoundingClientRect();
-    const touch = e.touches[0];
-    const x = touch.clientX - rect.left;
-    const y = touch.clientY - rect.top;
-
+    const x = ('touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left);
+    const y = ('touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top);
+  
     scratch(ctx, x, y);
     checkRevealed();
   };
@@ -117,11 +119,17 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   return (
     <Card 
       className="w-full max-w-[280px] h-[140px] mx-auto bg-card/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30"
-      onMouseMove={handleMouseMove}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={checkRevealed}
     >
-      <CardContent className="relative w-full h-full p-0 flex items-center justify-center text-center">
+      <CardContent 
+        className="relative w-full h-full p-0 flex items-center justify-center text-center"
+        onMouseDown={handleStart}
+        onMouseMove={handleMove}
+        onMouseUp={handleEnd}
+        onMouseLeave={handleEnd}
+        onTouchStart={handleStart}
+        onTouchMove={handleMove}
+        onTouchEnd={handleEnd}
+      >
         <div className={cn(
           "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500",
           isRevealed ? "opacity-100" : "opacity-0"

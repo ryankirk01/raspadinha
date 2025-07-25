@@ -11,9 +11,6 @@ import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/componen
 import { cn } from '@/lib/utils';
 import { Rocket } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
-import Autoplay from "embla-carousel-autoplay"
-
 
 const testimonials = [
   {
@@ -118,29 +115,13 @@ export default function Home() {
 
         <div className="w-full pt-16">
           <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-             plugins={[
-              Autoplay({
-                delay: 4000,
-                stopOnInteraction: false,
-              }),
-            ]}
-            className="w-full max-w-xs sm:max-w-xl md:max-w-2xl lg:max-w-4xl"
-          >
-            <CarouselContent>
-              {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                   <div className="p-4">
-                    <TestimonialScratchCard {...testimonial} />
-                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+          <div className="flex flex-wrap justify-center gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="p-1">
+                <TestimonialScratchCard {...testimonial} />
+              </div>
+            ))}
+          </div>
         </div>
 
         <footer className="w-full flex flex-col items-center space-y-4 pt-12 border-t border-white/10 animate-fadeIn" style={{ animationDelay: '1.6s' }}>
