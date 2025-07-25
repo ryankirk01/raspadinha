@@ -11,7 +11,7 @@ type TestimonialProps = {
 
 export function Testimonial({ name, prize, avatar, dataAiHint }: TestimonialProps) {
   return (
-    <Card className="bg-card/50 backdrop-blur-sm border-primary/20 text-center transform hover:scale-105 hover:border-primary transition-all duration-300">
+    <Card className="bg-card/50 backdrop-blur-sm border-primary/20 text-center transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30">
       <CardHeader className="items-center pb-2">
         <Avatar className="w-20 h-20 border-2 border-primary">
           <AvatarImage src={avatar} alt={name} data-ai-hint={dataAiHint} />
