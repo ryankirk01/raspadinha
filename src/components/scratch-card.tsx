@@ -4,6 +4,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Gift } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 // Particle type for the explosion effect
 type Particle = {
@@ -139,20 +140,20 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     canvas.width = W;
     canvas.height = H;
 
-    const particleCount = 200;
+    const particleCount = 300;
     const colors = ["#fde047", "#f97316", "#facc15", "#ffffff", "#eab308"];
     particles.current = [];
 
     for (let i = 0; i < particleCount; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 6 + 2;
-        const life = Math.random() * 60 + 60; // 1 to 2 seconds
+        const speed = Math.random() * 8 + 3;
+        const life = Math.random() * 80 + 80; // a bit longer life
         particles.current.push({
             x: W / 2,
             y: H / 2,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            radius: Math.random() * 2 + 1,
+            radius: Math.random() * 2.5 + 1.5,
             color: colors[Math.floor(Math.random() * colors.length)],
             life: life,
             initialLife: life,
@@ -208,9 +209,12 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
 
-        <div className="absolute inset-0 bg-black/50 z-10"></div>
+        <div className="absolute inset-0 bg-black/60 z-10"></div>
 
-        <div className="text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700">
+        <div className={cn(
+          "text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700",
+          isRevealed && "animate-pulse"
+        )}>
             <Gift className="w-10 h-10 text-yellow-300 drop-shadow-lg" />
             <h3 className="text-xl font-black text-white text-glow">
                 VOCÊ GANHOU R$100!
