@@ -3,10 +3,11 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Gift } from 'lucide-react';
+import { Gift, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Progress } from "@/components/ui/progress"
 
-// Particle type for the explosion effect
+
 type Particle = {
   x: number;
   y: number;
@@ -19,7 +20,7 @@ type Particle = {
   gravity: number;
 };
 
-export function ScratchCard({ onComplete }: { onComplete: () => void }) {
+export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; onUpdate: (progress: number) => void; }) {
   const scratchCanvasRef = useRef<HTMLCanvasElement>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
@@ -29,33 +30,37 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
 
   const particles = useRef<Particle[]>([]);
 
-  const W = 350;
-  const H = 150;
+  const W = 400;
+  const H = 200;
 
-  // Initialize scratch surface and audio
   useEffect(() => {
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Create a metallic gradient for the scratch surface
     const gradient = ctx.createLinearGradient(0, 0, W, H);
-    gradient.addColorStop(0, '#B4B4B4');
-    gradient.addColorStop(0.2, '#E0E0E0');
-    gradient.addColorStop(0.4, '#B4B4B4');
-    gradient.addColorStop(0.6, '#9C9C9C');
-    gradient.addColorStop(0.8, '#E0E0E0');
-    gradient.addColorStop(1, '#B4B4B4');
+    gradient.addColorStop(0, '#d4af37'); 
+    gradient.addColorStop(0.2, '#ffd700');
+    gradient.addColorStop(0.4, '#f0e68c');
+    gradient.addColorStop(0.6, '#d4af37');
+    gradient.addColorStop(0.8, '#daa520');
+    gradient.addColorStop(1, '#b8860b');
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, W, H);
+    
+    ctx.font = 'bold 24px Poppins';
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('RASPE AQUI SUA SORTE', W / 2, H / 2);
+
 
     ctx.globalCompositeOperation = 'destination-out';
     
-    // Preload audio
     if (typeof Audio !== 'undefined') {
-      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_2b68551ada.mp3');
+      audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/11/22/audio_7900a8cac3.mp3');
       audioRef.current.preload = 'auto';
     }
 
@@ -63,7 +68,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 25, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 30, 0, 2 * Math.PI, true);
     ctx.fill();
   }, []);
 
@@ -75,7 +80,6 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
   }
 
   const checkRevealed = useCallback(() => {
-    if (isRevealed || hasCalledOnComplete.current) return;
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -85,21 +89,21 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     const data = imageData.data;
     let transparentPixels = 0;
     for (let i = 3; i < data.length; i += 4) {
-      if (data[i] === 0) {
+      if (data[i] < 128) {
         transparentPixels++;
       }
     }
     
     const percentage = (transparentPixels / (W * H)) * 100;
-    if (percentage > 70) {
+    onUpdate(percentage);
+
+    if (percentage > 70 && !hasCalledOnComplete.current) {
       setIsRevealed(true);
-      if (!hasCalledOnComplete.current) {
-        onComplete();
-        playSound();
-        hasCalledOnComplete.current = true;
-      }
+      onComplete();
+      playSound();
+      hasCalledOnComplete.current = true;
     }
-  }, [isRevealed, onComplete]);
+  }, [onComplete, onUpdate]);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
@@ -109,12 +113,14 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
 
   const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
-    isDrawing.current = false;
-    checkRevealed();
+    if (isDrawing.current) {
+        isDrawing.current = false;
+        checkRevealed();
+    }
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing.current || isRevealed) return;
+    if (!isDrawing.current || hasCalledOnComplete.current) return;
     e.preventDefault();
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
@@ -126,9 +132,9 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
 
     scratch(ctx, x, y);
+    checkRevealed();
   };
   
-  // Explosion effect animation
   useEffect(() => {
     if (!isRevealed) return;
 
@@ -140,24 +146,24 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     canvas.width = W;
     canvas.height = H;
 
-    const particleCount = 300;
-    const colors = ["#fde047", "#f97316", "#facc15", "#ffffff", "#eab308"];
+    const particleCount = 400; 
+    const colors = ["#FFD700", "#FFA500", "#FFC400", "#FFFFFF", "#FFD700"];
     particles.current = [];
 
     for (let i = 0; i < particleCount; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 8 + 3;
-        const life = Math.random() * 80 + 80; // a bit longer life
+        const speed = Math.random() * 10 + 4;
+        const life = Math.random() * 90 + 90;
         particles.current.push({
             x: W / 2,
             y: H / 2,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            radius: Math.random() * 2.5 + 1.5,
+            radius: Math.random() * 3 + 2,
             color: colors[Math.floor(Math.random() * colors.length)],
             life: life,
             initialLife: life,
-            gravity: 0.1,
+            gravity: 0.15,
         });
     }
 
@@ -176,7 +182,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
             const alpha = Math.max(0, p.life / p.initialLife);
 
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, false);
+            ctx.arc(p.x, p.y, p.radius * (p.life / p.initialLife), 0, Math.PI * 2, false);
             ctx.fillStyle = `${p.color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
             ctx.fill();
 
@@ -201,7 +207,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
 
 
   return (
-    <Card className="w-[350px] h-[150px] bg-gradient-to-br from-yellow-300 via-primary to-amber-600 p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]">
+    <Card className="w-[400px] h-[200px] bg-gradient-to-br from-yellow-300 via-primary to-amber-600 p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]">
       <CardContent className="relative w-full h-full p-0 flex items-center justify-center">
         
         <canvas
@@ -209,14 +215,14 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
 
-        <div className="absolute inset-0 bg-black/60 z-10"></div>
+        <div className="absolute inset-0 bg-black/70 z-10"></div>
 
         <div className={cn(
           "text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700",
-          isRevealed && "animate-pulse"
+           isRevealed && "animate-prize-reveal"
         )}>
-            <Gift className="w-10 h-10 text-yellow-300 drop-shadow-lg" />
-            <h3 className="text-xl font-black text-white text-glow">
+            <Gift className="w-12 h-12 text-yellow-300 drop-shadow-lg" />
+            <h3 className="text-2xl font-black text-white text-glow">
                 VOCÊ GANHOU R$100!
             </h3>
             <p className="text-xs font-bold text-yellow-200 px-4">
@@ -229,7 +235,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
           ref={scratchCanvasRef}
           width={W}
           height={H}
-          className={`absolute top-0 left-0 w-full h-full z-30 cursor-pointer rounded-md transition-opacity duration-700 ${isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+          className={`absolute top-0 left-0 w-full h-full z-30 cursor-crosshair rounded-md transition-opacity duration-700 ${isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
           onMouseDown={handleStart}
           onMouseMove={handleMove}
           onMouseUp={handleEnd}
@@ -241,4 +247,16 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
       </CardContent>
     </Card>
   );
+}
+
+export function ScratchProgress({ progress }: { progress: number }) {
+  return (
+     <div className="w-full max-w-xs px-4">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-xs font-semibold text-primary/80">Medidor de Sorte</span>
+        <Sparkles className="w-4 h-4 text-primary" />
+      </div>
+      <Progress value={progress} className="w-full h-3 bg-primary/20 border border-primary/30" />
+    </div>
+  )
 }

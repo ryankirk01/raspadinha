@@ -4,12 +4,11 @@
 import { useState } from 'react';
 import { Particles } from '@/components/particles';
 import { Countdown } from '@/components/countdown';
-import { ScratchCard } from '@/components/scratch-card';
+import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
 import { Testimonial } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
 import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
-import { Gift } from 'lucide-react';
 
 const testimonials = [
   {
@@ -28,10 +27,25 @@ const testimonials = [
 
 export default function Home() {
   const [isScratchComplete, setIsScratchComplete] = useState(false);
+  const [scratchProgress, setScratchProgress] = useState(0);
+
+  const handleScratchComplete = () => {
+    setIsScratchComplete(true);
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate([200, 50, 200]);
+    }
+  }
+
+  const handleScratchUpdate = (progress: number) => {
+    setScratchProgress(progress);
+     if (window.navigator.vibrate && progress > 85 && progress < 95) {
+      window.navigator.vibrate(50);
+    }
+  }
 
   return (
     <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden p-4">
-      <Particles className="absolute inset-0 z-0" quantity={200} />
+      <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 500 : 200} />
       
       <main className="z-10 flex flex-col items-center justify-center w-full max-w-4xl text-center space-y-8 md:space-y-12 py-16">
         <div className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
@@ -39,7 +53,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-4 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
-          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase text-glow tracking-tighter">
+          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase text-glow tracking-tighter title-shine">
             Raspe e Ganhe até <span className="text-primary">R$10.000!</span>
           </h1>
           <p className="text-lg md:text-xl text-foreground/80">
@@ -47,8 +61,14 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="animate-float" style={{ animationDelay: '0.6s' }}>
-          <ScratchCard onComplete={() => setIsScratchComplete(true)} />
+        <div className="w-full max-w-sm flex flex-col items-center gap-4">
+           <div className={cn("animate-float w-full flex flex-col items-center gap-4 transition-all duration-500", isScratchComplete && "scale-110")}>
+            <ScratchCard 
+              onComplete={handleScratchComplete}
+              onUpdate={handleScratchUpdate} 
+            />
+             <ScratchProgress progress={scratchProgress} />
+          </div>
         </div>
 
         <div className={cn("w-full max-w-lg transition-all duration-500", isScratchComplete ? "opacity-100 scale-100" : "opacity-50 scale-90")}>
