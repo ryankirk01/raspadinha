@@ -25,6 +25,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
+  const [shouldAnimatePrize, setShouldAnimatePrize] = useState(false);
   const isDrawing = useRef(false);
   const hasCalledOnComplete = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -124,6 +125,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (percentage > 60) {
       setIsRevealed(true);
       if (!hasCalledOnComplete.current) {
+        setShouldAnimatePrize(true);
         onComplete();
         playSound();
         hasCalledOnComplete.current = true;
@@ -249,7 +251,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   return (
     <Card 
       ref={containerRef}
-      className="w-full max-w-sm h-auto aspect-[2/1] bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)_/_0.4)_0%,_hsl(var(--background))_80%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]"
+      className="w-full max-w-sm h-auto aspect-[2/1] bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)_/_0.4)_0%,_hsl(var(--background))_80%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)] touch-none"
     >
       <CardContent className="relative w-full h-full p-0 flex items-center justify-center">
         
@@ -261,7 +263,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         <div className={cn(
           "text-center z-10 flex flex-col items-center gap-1 p-4",
            "bg-black/40 rounded-lg",
-           isRevealed && "animate-prize-reveal-2"
+           shouldAnimatePrize && "animate-prize-reveal"
         )}>
             <Gift className="w-12 h-12 text-yellow-300 drop-shadow-[0_2px_5px_rgba(255,215,0,0.7)]" />
             <h3 className="text-xl font-bold uppercase tracking-wider text-white">
