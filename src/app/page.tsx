@@ -86,8 +86,8 @@ export default function Home() {
               size="lg"
               disabled={!isScratchComplete}
               className={cn(
-                "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg button-glow hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:button-glow-off disabled:cursor-not-allowed disabled:opacity-50",
-                isScratchComplete && "animate-pulse"
+                "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:button-glow-off disabled:cursor-not-allowed disabled:opacity-50",
+                isScratchComplete && "animate-pulse button-glow"
               )}
             >
               GARANTIR MEU PRÊMIO AGORA 🎯

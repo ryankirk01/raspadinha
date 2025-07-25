@@ -83,7 +83,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const checkRevealed = useCallback(() => {
     const canvas = scratchCanvasRef.current;
     if (!canvas || hasCalledOnComplete.current) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     const imageData = ctx.getImageData(0, 0, W, H);
@@ -222,7 +222,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
 
   return (
-    <Card className="w-[400px] h-[200px] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)_/_0.5)_0%,_hsl(var(--background))_70%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]">
+    <Card className="w-[400px] h-[200px] bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)_/_0.4)_0%,_hsl(var(--background))_80%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]">
       <CardContent className="relative w-full h-full p-0 flex items-center justify-center">
         
         <canvas
@@ -235,10 +235,10 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
            isRevealed && "animate-prize-reveal"
         )}>
             <Gift className="w-12 h-12 text-yellow-300 drop-shadow-[0_2px_5px_rgba(255,215,0,0.7)]" />
-            <h3 className="text-xl font-bold uppercase tracking-wider text-white/90">
+            <h3 className="text-xl font-bold uppercase tracking-wider text-white">
                 Você Ganhou
             </h3>
-            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-amber-500" style={{ textShadow: '0 0 15px rgba(255, 215, 0, 0.5)' }}>
+            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-amber-500" style={{ textShadow: '0 0 20px #ffd700' }}>
                 R$100!
             </p>
         </div>
@@ -254,7 +254,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
           onMouseUp={handleEnd}
           onMouseLeave={handleEnd}
           onTouchStart={handleStart}
-  onTouchMove={handleMove}
+          onTouchMove={handleMove}
           onTouchEnd={handleEnd}
         />
       </CardContent>
