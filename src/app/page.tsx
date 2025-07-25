@@ -72,7 +72,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={cn("w-full max-w-lg transition-all duration-500 flex flex-col items-center gap-4", isScratchComplete ? "opacity-100 scale-100" : "opacity-50 scale-90")}>
+        <div className={cn("w-full max-w-lg transition-all duration-500 flex flex-col items-center gap-4", isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none")}>
           <a 
             href="https://raspadinha-gold.com/?code=RHY4R1BS5S"
             target="_blank" 
@@ -86,14 +86,19 @@ export default function Home() {
               size="lg"
               disabled={!isScratchComplete}
               className={cn(
-                "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:button-glow-off disabled:cursor-not-allowed disabled:opacity-50",
+                "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
                 isScratchComplete && "animate-pulse button-glow"
               )}
             >
               GARANTIR MEU PRÊMIO AGORA 🎯
             </Button>
           </a>
+            <p className="text-center text-sm text-foreground/80 mt-2 flex items-center gap-2">
+              <LockKeyhole className="w-4 h-4 text-primary" />
+              <strong>Para liberar seu prêmio:</strong> Cadastre-se e realize seu primeiro depósito.
+            </p>
         </div>
+
 
         <div className="w-full pt-16">
           <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
