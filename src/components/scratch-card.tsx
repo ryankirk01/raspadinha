@@ -68,7 +68,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 30, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 45, 0, 2 * Math.PI, true);
     ctx.fill();
   }, []);
 
@@ -97,7 +97,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const percentage = (transparentPixels / (W * H)) * 100;
     onUpdate(percentage);
 
-    if (percentage > 70) {
+    if (percentage > 60) {
       setIsRevealed(true);
       if (!hasCalledOnComplete.current) {
         onComplete();
