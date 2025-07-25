@@ -125,7 +125,7 @@ export default function Home() {
             }}
              plugins={[
               Autoplay({
-                delay: 2000,
+                delay: 4000,
                 stopOnInteraction: false,
               }),
             ]}
@@ -134,7 +134,7 @@ export default function Home() {
             <CarouselContent>
               {testimonials.map((testimonial, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                   <div className="p-1">
+                   <div className="p-4">
                     <TestimonialScratchCard {...testimonial} />
                    </div>
                 </CarouselItem>
