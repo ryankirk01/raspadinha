@@ -99,7 +99,7 @@ export default function Home() {
               <Rocket className="h-5 w-5 text-primary" />
               <AlertTitle className="font-bold text-primary">ÚLTIMO PASSO PARA O SAQUE!</AlertTitle>
               <AlertDescription className="text-foreground/80">
-                Realize seu cadastro e primeiro depósito para liberar o prêmio.
+                Realize seu cadastro e faça seu primeiro depósito para liberar o prêmio.
               </AlertDescription>
             </Alert>
         </div>
