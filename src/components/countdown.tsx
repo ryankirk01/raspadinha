@@ -22,9 +22,9 @@ export function Countdown() {
   };
 
   return (
-    <div className="bg-primary/20 border border-primary text-primary px-4 py-2 rounded-full shadow-lg">
-      <p className="text-sm md:text-base font-semibold">
-        Tempo restante da sua sorte: <span className="font-bold tabular-nums">{formatTime(timeLeft)}</span>
+    <div className="bg-primary/20 border border-primary text-primary px-6 py-3 rounded-full shadow-lg">
+      <p className="text-lg md:text-xl font-bold">
+        Sua Sorte Acaba em: <span className="font-black tabular-nums tracking-wider">{formatTime(timeLeft)}</span>
       </p>
     </div>
   );
