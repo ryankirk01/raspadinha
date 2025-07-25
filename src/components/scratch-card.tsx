@@ -5,15 +5,17 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Gift } from 'lucide-react';
 
-// Confetti particle type
-type ConfettiParticle = {
+// Particle type for the explosion effect
+type Particle = {
   x: number;
   y: number;
-  r: number;
-  d: number;
+  vx: number;
+  vy: number;
+  radius: number;
   color: string;
-  tilt: number;
-  tiltAngle: number;
+  life: number;
+  initialLife: number;
+  gravity: number;
 };
 
 export function ScratchCard({ onComplete }: { onComplete: () => void }) {
@@ -24,8 +26,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
   const hasCalledOnComplete = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Confetti state
-  const confettiParticles = useRef<ConfettiParticle[]>([]);
+  const particles = useRef<Particle[]>([]);
 
   const W = 350;
   const H = 150;
@@ -126,60 +127,71 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     scratch(ctx, x, y);
   };
   
-  // Confetti animation
+  // Explosion effect animation
   useEffect(() => {
     if (!isRevealed) return;
 
-    const confettiCanvas = confettiCanvasRef.current;
-    if (!confettiCanvas) return;
-    const ctx = confettiCanvas.getContext('2d');
+    const canvas = confettiCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    confettiCanvas.width = W;
-    confettiCanvas.height = H;
+    canvas.width = W;
+    canvas.height = H;
 
-    const maxConfettis = 250; 
-    const colors = ["#fde047", "#f97316", "#facc15", "#ffffff", "#4ade80"];
-    confettiParticles.current = [];
+    const particleCount = 200;
+    const colors = ["#fde047", "#f97316", "#facc15", "#ffffff", "#eab308"];
+    particles.current = [];
 
-    for (let i = 0; i < maxConfettis; i++) {
-        confettiParticles.current.push({
-            x: Math.random() * W,
-            y: Math.random() * H - H,
-            r: Math.random() * 5 + 2,
-            d: Math.random() * maxConfettis,
+    for (let i = 0; i < particleCount; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 6 + 2;
+        const life = Math.random() * 60 + 60; // 1 to 2 seconds
+        particles.current.push({
+            x: W / 2,
+            y: H / 2,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: Math.random() * 2 + 1,
             color: colors[Math.floor(Math.random() * colors.length)],
-            tilt: Math.floor(Math.random() * 10) - 10,
-            tiltAngle: 0,
+            life: life,
+            initialLife: life,
+            gravity: 0.1,
         });
     }
 
     let animationFrameId: number;
 
-    const drawConfetti = () => {
-        if (!ctx) return;
-        ctx.clearRect(0, 0, W, H);
-        confettiParticles.current.forEach((p, i) => {
-            ctx.beginPath();
-            ctx.lineWidth = p.r;
-            ctx.strokeStyle = p.color;
-            ctx.moveTo(p.x + p.tilt, p.y);
-            ctx.lineTo(p.x, p.y + p.tilt + p.r);
-            ctx.stroke();
-
-            p.tiltAngle += 0.07;
-            p.y += (Math.cos(p.d) + 3 + p.r/2) * 0.8;
-            p.x += Math.sin(p.d);
-            p.tilt = (Math.sin(p.d) * 15);
+    const drawParticles = () => {
+        if (!ctx || !canvas) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.current.forEach((p, index) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += p.gravity;
+            p.life -= 1;
             
-            if (p.y > H) {
-                confettiParticles.current[i] = { ...p, x: Math.random() * W, y: -20, };
+            const alpha = Math.max(0, p.life / p.initialLife);
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, false);
+            ctx.fillStyle = `${p.color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
+            ctx.fill();
+
+            if (p.life <= 0) {
+              particles.current.splice(index, 1);
             }
         });
-        animationFrameId = requestAnimationFrame(drawConfetti);
+
+        if (particles.current.length > 0) {
+            animationFrameId = requestAnimationFrame(drawParticles);
+        } else {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
     };
 
-    drawConfetti();
+    drawParticles();
 
     return () => {
         cancelAnimationFrame(animationFrameId);
@@ -196,7 +208,7 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
 
-        <div className="absolute inset-0 bg-black/30 z-10"></div>
+        <div className="absolute inset-0 bg-black/50 z-10"></div>
 
         <div className="text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700">
             <Gift className="w-10 h-10 text-yellow-300 drop-shadow-lg" />
@@ -226,5 +238,3 @@ export function ScratchCard({ onComplete }: { onComplete: () => void }) {
     </Card>
   );
 }
-
-    
