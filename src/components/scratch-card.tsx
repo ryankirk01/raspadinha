@@ -230,7 +230,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
           className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
         />
 
-        <div className="absolute inset-0 bg-black/80 z-10"></div>
+        <div className="absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0)_80%)]"></div>
 
         <div className={cn(
           "text-center z-10 text-background flex flex-col items-center gap-1 p-4 transition-all duration-700",
