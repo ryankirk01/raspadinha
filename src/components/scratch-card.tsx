@@ -92,7 +92,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 20, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 35, 0, 2 * Math.PI, true);
     ctx.fill();
   }, []);
 
@@ -124,15 +124,15 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     onUpdate(percentage);
 
     if (percentage > 60) {
-      setIsRevealed(true);
       if (!hasCalledOnComplete.current) {
+        setIsRevealed(true);
         setShouldAnimatePrize(true);
         onComplete();
         playSound();
         hasCalledOnComplete.current = true;
       }
     }
-  }, [onComplete, onUpdate, dimensions]);
+  }, [onComplete, onUpdate, dimensions, playSound]);
 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
