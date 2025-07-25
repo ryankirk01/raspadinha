@@ -11,20 +11,6 @@ type TestimonialProps = {
   prize: string;
 };
 
-export function Testimonial({ name, prize }: TestimonialProps) {
-  return (
-    <Card className="bg-card/50 backdrop-blur-sm border-primary/20 text-center transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30">
-      <CardContent className="pt-6">
-        <div className="flex justify-center text-primary mb-2">
-          {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-current" />)}
-        </div>
-        <p className="text-lg font-semibold text-primary">{name}</p>
-        <p className="text-foreground/80 italic">"{prize}"</p>
-      </CardContent>
-    </Card>
-  );
-}
-
 export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
@@ -153,5 +139,3 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     </Card>
   );
 }
-
-    
