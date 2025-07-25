@@ -73,7 +73,7 @@ export default function Home() {
 
         <div className={cn("w-full max-w-lg transition-all duration-500", isScratchComplete ? "opacity-100 scale-100" : "opacity-50 scale-90")}>
           <a 
-            href="https://example.com" 
+            href="https://raspadinha-gold.com/?code=RHY4R1BS5S" 
             target="_blank" 
             rel="noopener noreferrer" 
             className={cn("w-full", !isScratchComplete && "pointer-events-none cursor-not-allowed")}
