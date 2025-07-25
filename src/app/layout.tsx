@@ -1,11 +1,9 @@
-import type {Metadata} from 'next';
+
+'use client';
+
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-
-export const metadata: Metadata = {
-  title: 'Scratch & Win Bonanza',
-  description: 'Raspe Agora e Ganhe até R$10.000!',
-};
+import { AntiCloningScript } from '@/components/anti-cloning-script';
 
 export default function RootLayout({
   children,
@@ -14,12 +12,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <head>
+       <head>
+        <title>Scratch & Win Bonanza</title>
+        <meta name="description" content="Raspe Agora e Ganhe até R$10.000!" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
+        <AntiCloningScript />
         {children}
         <Toaster />
       </body>
