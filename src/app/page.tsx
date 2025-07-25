@@ -46,7 +46,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden p-4">
-      <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 500 : 150} />
+      <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 200 : 100} />
       
       <main className="z-10 flex flex-col items-center justify-center w-full max-w-4xl text-center space-y-8 md:space-y-12 py-16">
         <div className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
@@ -57,7 +57,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter title-shine">
              Raspe e Ganhe até <span className="text-primary text-glow">R$10.000!</span>
           </h1>
-          <p className="text-lg md:text-xl text-foreground/80">
+          <p className="text-lg md:text-xl text-foreground/90">
             Sua sorte está a um toque de distância. Raspe agora!
           </p>
         </div>
@@ -86,22 +86,13 @@ export default function Home() {
               size="lg"
               disabled={!isScratchComplete}
               className={cn(
-                "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-primary to-amber-600 text-primary-foreground rounded-lg button-glow hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:button-glow-off disabled:cursor-not-allowed disabled:opacity-50",
-                isScratchComplete && "animate-pulse-strong"
+                "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg button-glow hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:button-glow-off disabled:cursor-not-allowed disabled:opacity-50",
+                isScratchComplete && "animate-pulse"
               )}
             >
               GARANTIR MEU PRÊMIO AGORA 🎯
             </Button>
           </a>
-
-          {isScratchComplete && (
-            <div className="flex items-center gap-2 text-sm text-foreground/70 animate-fadeIn" style={{animationDelay: '0.2s'}}>
-                <LockKeyhole className="w-4 h-4 text-primary" />
-                <p>
-                  <strong>Para liberar seu prêmio:</strong> Cadastre-se e realize seu primeiro depósito.
-                </p>
-            </div>
-          )}
         </div>
 
         <div className="w-full pt-16">
