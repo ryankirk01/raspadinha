@@ -63,7 +63,7 @@ export default function Home() {
         </div>
 
         <div className="w-full max-w-sm flex flex-col items-center gap-4">
-           <div className={cn("animate-float w-full flex flex-col items-center gap-4 transition-all duration-500", isScratchComplete && "scale-110")}>
+           <div className={cn("animate-float w-full flex flex-col items-center gap-4 transition-all duration-500", isScratchComplete && "scale-105")}>
             <ScratchCard 
               onComplete={handleScratchComplete}
               onUpdate={handleScratchUpdate} 
@@ -87,14 +87,15 @@ export default function Home() {
               disabled={!isScratchComplete}
               className={cn(
                 "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
-                isScratchComplete && "animate-pulse button-glow"
+                 isScratchComplete && "animate-pulse button-glow"
               )}
+              style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}
             >
               GARANTIR MEU PRÊMIO AGORA 🎯
             </Button>
           </a>
-            <p className="text-center text-sm text-foreground/80 mt-2 flex items-center gap-2">
-              <LockKeyhole className="w-4 h-4 text-primary" />
+            <p className="text-center text-sm sm:text-base text-foreground/80 mt-2 flex items-center gap-2">
+              <LockKeyhole className="w-4 h-4 text-primary shrink-0" />
               <strong>Para liberar seu prêmio:</strong> Cadastre-se e realize seu primeiro depósito.
             </p>
         </div>

@@ -23,6 +23,7 @@ type Particle = {
 export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; onUpdate: (progress: number) => void; }) {
   const scratchCanvasRef = useRef<HTMLCanvasElement>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const isDrawing = useRef(false);
   const hasCalledOnComplete = useRef(false);
@@ -31,14 +32,15 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const particles = useRef<Particle[]>([]);
 
-  const W = 400;
-  const H = 200;
+  const [dimensions, setDimensions] = useState({ W: 350, H: 175 });
 
-  useEffect(() => {
+  const initCanvas = useCallback(() => {
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    
+    const { W, H } = dimensions;
 
     const gradient = ctx.createLinearGradient(0, 0, W, H);
     gradient.addColorStop(0, '#d4af37'); 
@@ -51,7 +53,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, W, H);
     
-    ctx.font = 'bold 24px Poppins';
+    ctx.font = 'bold 20px Poppins';
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -59,17 +61,36 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
 
     ctx.globalCompositeOperation = 'destination-out';
+  }, [dimensions]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const { width } = containerRef.current.getBoundingClientRect();
+        const newW = Math.min(width, 400); // Max width of 400px
+        const newH = newW / 2;
+        setDimensions({ W: newW, H: newH });
+      }
+    };
     
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    initCanvas();
+
     if (typeof Audio !== 'undefined') {
       audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_19d906d09a.mp3');
       audioRef.current.preload = 'auto';
     }
-
-  }, []);
+  }, [initCanvas]);
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 45, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 35, 0, 2 * Math.PI, true);
     ctx.fill();
   }, []);
 
@@ -85,6 +106,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (!canvas || hasCalledOnComplete.current) return;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
+    
+    const { W, H } = dimensions;
 
     const imageData = ctx.getImageData(0, 0, W, H);
     const data = imageData.data;
@@ -106,7 +129,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         hasCalledOnComplete.current = true;
       }
     }
-  }, [onComplete, onUpdate]);
+  }, [onComplete, onUpdate, dimensions]);
 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
@@ -132,8 +155,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (!ctx) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    const x = ('touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left);
+    const y = ('touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top);
 
     scratch(ctx, x, y);
 
@@ -151,6 +174,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    const { W, H } = dimensions;
     
     canvas.width = W;
     canvas.height = H;
@@ -218,11 +243,14 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     return () => {
         cancelAnimationFrame(animationFrameId);
     };
-}, [isRevealed]);
+}, [isRevealed, dimensions]);
 
 
   return (
-    <Card className="w-[400px] h-[200px] bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)_/_0.4)_0%,_hsl(var(--background))_80%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]">
+    <Card 
+      ref={containerRef}
+      className="w-full max-w-sm h-auto aspect-[2/1] bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)_/_0.4)_0%,_hsl(var(--background))_80%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]"
+    >
       <CardContent className="relative w-full h-full p-0 flex items-center justify-center">
         
         <canvas
@@ -232,7 +260,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
         <div className={cn(
           "text-center z-10 flex flex-col items-center gap-1 p-4",
-           isRevealed && "animate-prize-reveal"
+           "bg-black/40 rounded-lg",
+           isRevealed && "animate-prize-reveal-2"
         )}>
             <Gift className="w-12 h-12 text-yellow-300 drop-shadow-[0_2px_5px_rgba(255,215,0,0.7)]" />
             <h3 className="text-xl font-bold uppercase tracking-wider text-white">
@@ -246,8 +275,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
         <canvas
           ref={scratchCanvasRef}
-          width={W}
-          height={H}
+          width={dimensions.W}
+          height={dimensions.H}
           className={`absolute top-0 left-0 w-full h-full z-30 cursor-crosshair rounded-md transition-opacity duration-700 ${isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
           onMouseDown={handleStart}
           onMouseMove={handleMove}
