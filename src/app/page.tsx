@@ -33,6 +33,10 @@ const testimonials = [
     name: 'Pedro M.',
     prize: 'R$300! Já quero raspar de novo.',
   },
+  {
+    name: 'Sofia C.',
+    prize: 'Tirei R$1000, sensacional!',
+  }
 ];
 
 export default function Home() {
@@ -57,7 +61,7 @@ export default function Home() {
     <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden p-4">
       <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 200 : 100} />
       
-      <main className="z-10 flex flex-col items-center justify-center w-full max-w-4xl text-center space-y-8 md:space-y-12 py-16">
+      <main className="z-10 flex flex-col items-center justify-center w-full max-w-5xl text-center space-y-8 md:space-y-12 py-16">
         <div className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
           <Countdown />
         </div>
@@ -115,11 +119,9 @@ export default function Home() {
 
         <div className="w-full pt-16">
           <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="p-1">
-                <TestimonialScratchCard {...testimonial} />
-              </div>
+              <TestimonialScratchCard key={index} {...testimonial} />
             ))}
           </div>
         </div>
