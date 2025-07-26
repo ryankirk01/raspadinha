@@ -4,7 +4,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Star } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 type TestimonialProps = {
   name: string;
