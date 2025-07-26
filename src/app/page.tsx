@@ -130,6 +130,16 @@ export default function Home() {
                 Realize seu cadastro e faça seu primeiro depósito para liberar o prêmio.
               </AlertDescription>
             </Alert>
+             <div className="relative w-full max-w-md overflow-hidden bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 py-2 mt-2 rounded-md shadow-lg">
+                <div className="flex animate-marquee whitespace-nowrap">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="flex items-center mx-4">
+                      <span className="text-md font-black text-black uppercase">PRÊMIO LIBERADO COM SUCESSO!</span>
+                      <Star className="w-4 h-4 mx-2 text-black fill-current" />
+                    </div>
+                  ))}
+                </div>
+              </div>
         </div>
         
         <div className="w-full pt-16 space-y-12">
