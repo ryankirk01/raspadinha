@@ -33,6 +33,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const confettiTriggered = useRef(false);
 
   const particles = useRef<Particle[]>([]);
+  const touchStartPos = useRef<{ x: number, y: number } | null>(null);
+
 
   const [dimensions, setDimensions] = useState({ W: 350, H: 175 });
 
@@ -126,36 +128,54 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (percentage > 60) {
       if (!hasCalledOnComplete.current) {
         setIsRevealed(true);
-        setShouldAnimatePrize(true);
+        if (!shouldAnimatePrize) {
+            setShouldAnimatePrize(true);
+        }
         onComplete();
         playSound();
         hasCalledOnComplete.current = true;
       }
     }
-  }, [onComplete, onUpdate, dimensions, playSound]);
+  }, [onComplete, onUpdate, dimensions, playSound, shouldAnimatePrize]);
 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
     isDrawing.current = true;
+    if ('touches' in e) {
+      touchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
     handleMove(e);
   };
 
   const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
     if (isDrawing.current) {
         isDrawing.current = false;
         checkRevealed(); // Final check on mouse up
     }
+    touchStartPos.current = null;
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDrawing.current || hasCalledOnComplete.current) return;
-    e.preventDefault();
+    
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    if ('touches' in e) {
+      if (touchStartPos.current) {
+        const dx = Math.abs(e.touches[0].clientX - touchStartPos.current.x);
+        const dy = Math.abs(e.touches[0].clientY - touchStartPos.current.y);
+        // If it's more of a vertical swipe (scrolling), don't draw
+        if (dy > dx + 5) { 
+          isDrawing.current = false;
+          return;
+        }
+      }
+      e.preventDefault(); // Prevent scroll only when scratching
+    }
+
 
     const rect = canvas.getBoundingClientRect();
     const x = ('touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left);

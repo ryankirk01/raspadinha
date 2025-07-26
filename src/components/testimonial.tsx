@@ -16,6 +16,8 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 280, H = 140;
   const isDrawing = useRef(false);
+  const touchStartPos = useRef<{ x: number, y: number } | null>(null);
+
 
   const initCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -73,26 +75,40 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   }, [isRevealed]);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
     isDrawing.current = true;
+    if ('touches' in e) {
+        touchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
     handleMove(e);
   };
   
   const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
     if (isDrawing.current) {
       isDrawing.current = false;
       checkRevealed();
     }
+    touchStartPos.current = null;
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDrawing.current || isRevealed) return;
-    e.preventDefault();
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    if ('touches' in e) {
+        if (touchStartPos.current) {
+            const dx = Math.abs(e.touches[0].clientX - touchStartPos.current.x);
+            const dy = Math.abs(e.touches[0].clientY - touchStartPos.current.y);
+            if (dy > dx + 5) {
+                isDrawing.current = false;
+                return;
+            }
+        }
+        e.preventDefault();
+    }
   
     const rect = canvas.getBoundingClientRect();
     const x = ('touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left);
