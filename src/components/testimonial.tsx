@@ -9,20 +9,18 @@ import { cn } from '@/lib/utils';
 type TestimonialProps = {
   name: string;
   prize: string;
-  mainScratchCompleted: boolean;
 };
 
-export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: TestimonialProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
+  const scratchCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 280, H = 140;
+  
   const isDrawing = useRef(false);
-  const touchStartPos = useRef<{ x: number, y: number } | null>(null);
-  const touchMovePos = useRef<{ x: number, y: number } | null>(null);
-
+  const lastPos = useRef<{ x: number, y: number } | null>(null);
 
   const initCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
+    const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -45,20 +43,30 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   }, []);
 
   useEffect(() => {
-    if (mainScratchCompleted) {
-      initCanvas();
-    }
-  }, [initCanvas, mainScratchCompleted]);
+    initCanvas();
+  }, [initCanvas]);
+
+  const getPosition = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = scratchCanvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in e.nativeEvent ? e.nativeEvent.touches[0].clientX : e.nativeEvent.clientX;
+    const clientY = 'touches' in e.nativeEvent ? e.nativeEvent.touches[0].clientY : e.nativeEvent.clientY;
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+    };
+  };
 
   const scratch = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
-    ctx.arc(x, y, 35, 0, 2 * Math.PI, true);
+    ctx.arc(x, y, 20, 0, 2 * Math.PI, true);
     ctx.fill();
   };
 
   const checkRevealed = useCallback(() => {
     if (isRevealed) return;
-    const canvas = canvasRef.current;
+    const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
@@ -78,88 +86,40 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
     }
   }, [isRevealed]);
 
- const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    isDrawing.current = false;
-    touchMovePos.current = null;
-    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-        const touch = e.nativeEvent.touches[0];
-        touchStartPos.current = { x: touch.clientX, y: touch.clientY };
-    } else if (e.nativeEvent instanceof MouseEvent) {
-        isDrawing.current = true;
-    }
+  const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
+    isDrawing.current = true;
+    lastPos.current = getPosition(e);
   };
   
   const handleEnd = () => {
-    if (isDrawing.current) {
-        checkRevealed();
-    }
     isDrawing.current = false;
-    touchStartPos.current = null;
-    touchMovePos.current = null;
+    lastPos.current = null;
+    checkRevealed();
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (isRevealed) return;
-
-    let currentX: number, currentY: number;
-
-    if (e.nativeEvent instanceof TouchEvent) {
-        if (e.nativeEvent.touches.length !== 1) return;
-        if (!touchStartPos.current) return;
-        
-        const touch = e.nativeEvent.touches[0];
-        currentX = touch.clientX;
-        currentY = touch.clientY;
-
-        if (!isDrawing.current && !touchMovePos.current) {
-          touchMovePos.current = { x: currentX, y: currentY };
-        }
-        
-        if (!isDrawing.current) {
-            const dx = currentX - touchStartPos.current.x;
-            const dy = currentY - touchStartPos.current.y;
-            
-            if (Math.abs(dy) > 5 && Math.abs(dy) > Math.abs(dx)) {
-                touchStartPos.current = null;
-                return;
-            }
-            if (Math.abs(dx) > 5) {
-                isDrawing.current = true;
-            }
-        }
-
-    } else if (e.nativeEvent instanceof MouseEvent) {
-        if (!isDrawing.current) return;
-        currentX = e.nativeEvent.clientX;
-        currentY = e.nativeEvent.clientY;
-    } else {
-        return;
-    }
-
     if (!isDrawing.current) return;
-  
-    if ('touches' in e.nativeEvent) {
-      e.preventDefault();
-    }
+    
+    e.preventDefault();
 
-    const canvas = canvasRef.current;
+    const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = currentX - rect.left;
-    const y = currentY - rect.top;
-  
-    scratch(ctx, x, y);
+    
+    const currentPos = getPosition(e);
+    if (currentPos) {
+      scratch(ctx, currentPos.x, currentPos.y);
+      lastPos.current = currentPos;
+    }
   };
 
   return (
     <Card 
-      className="w-[280px] h-[140px] mx-auto bg-card/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30 touch-none"
+      className="w-[280px] h-[140px] mx-auto bg-card/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30"
     >
       <CardContent 
-        className="relative w-full h-full p-0 flex items-center justify-center text-center"
+        className="relative w-full h-full p-0 flex items-center justify-center text-center touch-none"
         onMouseDown={handleStart}
         onMouseMove={handleMove}
         onMouseUp={handleEnd}
