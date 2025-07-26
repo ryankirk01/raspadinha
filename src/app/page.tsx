@@ -142,7 +142,7 @@ export default function Home() {
               </div>
         </div>
         
-        <div className="w-full pt-16 space-y-12">
+        <div className={cn("w-full pt-16 space-y-12 transition-all duration-700", isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none")}>
            <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
