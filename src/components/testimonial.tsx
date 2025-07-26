@@ -9,15 +9,18 @@ import { cn } from '@/lib/utils';
 type TestimonialProps = {
   name: string;
   prize: string;
+  mainScratchCompleted: boolean;
 };
 
-export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
+export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: TestimonialProps) {
   const scratchCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 280, H = 140;
 
   const isDrawing = useRef(false);
   const lastPos = useRef<{ x: number, y: number } | null>(null);
+  const touchStartPos = useRef<{ x: number, y: number } | null>(null);
+  const hasCalledOnComplete = useRef(false);
 
   const initCanvas = useCallback(() => {
     const canvas = scratchCanvasRef.current;
@@ -40,7 +43,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     ctx.fillText('RASPE AQUI', W / 2, H / 2);
 
     ctx.globalCompositeOperation = 'destination-out';
-  }, []);
+  }, [W, H]);
 
   useEffect(() => {
     initCanvas();
@@ -59,19 +62,9 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   };
 
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
-    if (!lastPos.current) {
-        lastPos.current = { x, y };
-        return;
-    }
-    ctx.beginPath();
-    ctx.moveTo(lastPos.current.x, lastPos.current.y);
-    ctx.lineTo(x, y);
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 40;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.stroke();
-    lastPos.current = { x, y };
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, 2 * Math.PI, true);
+      ctx.fill();
   }, []);
   
   const checkRevealed = useCallback(() => {
@@ -91,42 +84,63 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     }
     
     const percentage = (transparentPixels / (W * H)) * 100;
-    if (percentage > 50) {
+    if (percentage > 50 && !hasCalledOnComplete.current) {
       setIsRevealed(true);
+      hasCalledOnComplete.current = true;
     }
-  }, [isRevealed]);
+  }, [isRevealed, W, H]);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    isDrawing.current = true;
-    const pos = getPosition(e);
-    if (pos) {
-      lastPos.current = pos;
+    isDrawing.current = false; // Reset drawing state
+    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
+        const touch = e.nativeEvent.touches[0];
+        touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    } else {
+      isDrawing.current = true; // For mouse, start drawing immediately
     }
-  };
-  
-  const handleEnd = () => {
-    isDrawing.current = false;
-    lastPos.current = null;
-    checkRevealed();
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing.current || isRevealed) return;
+    if (hasCalledOnComplete.current) return;
 
-    if ('touches' in e.nativeEvent) {
-      e.preventDefault();
+    if (e.nativeEvent instanceof TouchEvent) {
+        if (!touchStartPos.current) return;
+        const touch = e.nativeEvent.touches[0];
+        const dx = touch.clientX - touchStartPos.current.x;
+        const dy = touch.clientY - touchStartPos.current.y;
+
+        if (!isDrawing.current) { // "Decision" mode
+            if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 5) {
+                // It's a scroll, not a draw. Lock this gesture.
+                touchStartPos.current = null;
+                return;
+            }
+            if (Math.abs(dx) > 5) {
+                e.preventDefault(); // Prevent page scroll
+                isDrawing.current = true;
+            }
+        }
     }
-    
+
+    if (!isDrawing.current) return;
+
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    const currentPos = getPosition(e);
-    if (currentPos) {
-      scratch(ctx, currentPos.x, currentPos.y);
+    const pos = getPosition(e);
+    if (pos) {
+      scratch(ctx, pos.x, pos.y);
     }
   };
+
+  const handleEnd = () => {
+    isDrawing.current = false;
+    touchStartPos.current = null;
+    checkRevealed();
+  };
+
 
   return (
     <Card 
@@ -134,7 +148,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     >
       <CardContent 
         className="relative w-full h-full p-0 flex items-center justify-center text-center"
-        style={{ touchAction: 'none' }}
+        style={{ touchAction: 'pan-y' }}
         onMouseDown={handleStart}
         onMouseMove={handleMove}
         onMouseUp={handleEnd}
