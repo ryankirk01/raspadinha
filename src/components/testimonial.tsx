@@ -9,9 +9,10 @@ import { cn } from '@/lib/utils';
 type TestimonialProps = {
   name: string;
   prize: string;
+  mainScratchCompleted: boolean;
 };
 
-export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
+export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: TestimonialProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 280, H = 140;
@@ -132,23 +133,25 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
         onTouchMove={handleMove}
         onTouchEnd={handleEnd}
       >
-        <div className={cn(
-          "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500",
-          isRevealed ? "opacity-100" : "opacity-0"
-        )}>
-          <div className="flex justify-center text-yellow-400 mb-1">
-            {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+        {mainScratchCompleted && (
+          <div className={cn(
+            "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500",
+            isRevealed ? "opacity-100" : "opacity-0"
+          )}>
+            <div className="flex justify-center text-yellow-400 mb-1">
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+            </div>
+            <p className="text-lg font-bold text-primary">{name}</p>
+            <p className="text-foreground/80 italic text-sm">"{prize}"</p>
           </div>
-          <p className="text-lg font-bold text-primary">{name}</p>
-          <p className="text-foreground/80 italic text-sm">"{prize}"</p>
-        </div>
+        )}
         <canvas
           ref={canvasRef}
           width={W}
           height={H}
           className={cn(
             "absolute top-0 left-0 w-full h-full cursor-crosshair rounded-md transition-opacity duration-700",
-            isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            (isRevealed && mainScratchCompleted) ? 'opacity-0 pointer-events-none' : 'opacity-100'
           )}
         />
       </CardContent>

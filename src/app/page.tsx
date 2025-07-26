@@ -84,7 +84,7 @@ export default function Home() {
             <ScratchProgress progress={scratchProgress} />
           </div>
           
-          <div className={cn("w-full transition-all duration-500 flex flex-col items-center text-center", !isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 h-0 pointer-events-none")}>
+          <div className={cn("w-full transition-all duration-500 flex flex-col items-center text-center", isScratchComplete ? "opacity-0 scale-90 h-0 pointer-events-none" : "opacity-100 scale-100")}>
             <div className="relative w-full overflow-hidden bg-gradient-to-r from-primary via-yellow-400 to-amber-600 py-2 my-2 rounded-md shadow-lg">
                 <div className="flex animate-marquee whitespace-nowrap">
                   {[...Array(2)].map((_, i) => (
@@ -146,8 +146,27 @@ export default function Home() {
            <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <TestimonialScratchCard key={index} {...testimonial} />
+              <TestimonialScratchCard 
+                key={index} 
+                {...testimonial} 
+                mainScratchCompleted={isScratchComplete} 
+              />
             ))}
+          </div>
+        </div>
+
+        <div className="relative w-full overflow-hidden bg-gradient-to-r from-primary via-yellow-400 to-amber-600 py-3 rounded-md shadow-lg mt-16 animate-fadeIn" style={{ animationDelay: '1.2s' }}>
+          <div className="flex animate-marquee whitespace-nowrap">
+              {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex items-center mx-4">
+                      <span className="text-lg font-black text-black uppercase tracking-wider">PRÊMIOS INSTANTÂNEOS</span>
+                      <Star className="w-5 h-5 mx-3 text-black fill-current" />
+                      <span className="text-lg font-black text-black uppercase tracking-wider">PAGAMENTO RÁPIDO</span>
+                       <Star className="w-5 h-5 mx-3 text-black fill-current" />
+                       <span className="text-lg font-black text-black uppercase tracking-wider">JOGUE AGORA</span>
+                       <Star className="w-5 h-5 mx-3 text-black fill-current" />
+                  </div>
+              ))}
           </div>
         </div>
 
