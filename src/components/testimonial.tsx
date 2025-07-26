@@ -76,44 +76,52 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   }, [isRevealed]);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    isDrawing.current = true;
-    if ('touches' in e) {
-        touchStartPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e.nativeEvent instanceof MouseEvent) {
+      isDrawing.current = true;
     }
-    handleMove(e);
+    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
+      touchStartPos.current = { x: e.nativeEvent.touches[0].clientX, y: e.nativeEvent.touches[0].clientY };
+    }
   };
   
   const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
-    if (isDrawing.current) {
-      isDrawing.current = false;
-      checkRevealed();
-    }
+    isDrawing.current = false;
     touchStartPos.current = null;
+    checkRevealed();
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing.current || isRevealed) return;
+    if (isRevealed) return;
     
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    if ('touches' in e) {
-        if (touchStartPos.current) {
-            const dx = Math.abs(e.touches[0].clientX - touchStartPos.current.x);
-            const dy = Math.abs(e.touches[0].clientY - touchStartPos.current.y);
-            if (dy > dx + 5) {
-                isDrawing.current = false;
+    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
+        if (touchStartPos.current && !isDrawing.current) {
+            const dx = e.nativeEvent.touches[0].clientX - touchStartPos.current.x;
+            const dy = e.nativeEvent.touches[0].clientY - touchStartPos.current.y;
+            if (Math.abs(dy) > 5) {
+                // It's a scroll
                 return;
             }
+            if (Math.abs(dx) > 5) {
+                isDrawing.current = true;
+            }
         }
-        e.preventDefault();
+        if (isDrawing.current) {
+            e.preventDefault();
+        }
     }
+
+    if (!isDrawing.current) return;
   
     const rect = canvas.getBoundingClientRect();
-    const x = ('touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left);
-    const y = ('touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
   
     scratch(ctx, x, y);
     checkRevealed();
