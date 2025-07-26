@@ -19,23 +19,23 @@ const testimonials = [
   },
   {
     name: 'Maria P.',
-    prize: 'Peguei R$2.000 na primeira tentativa',
+    prize: 'Peguei R$2.000',
   },
   {
     name: 'Carlos L.',
-    prize: 'Fácil e rápido, R$150 na conta!',
+    prize: 'Fácil e rápido, R$150!',
   },
   {
     name: 'Ana B.',
-    prize: 'Que sorte, R$750 logo de cara!',
+    prize: 'Que sorte, R$750!',
   },
   {
     name: 'Pedro M.',
-    prize: 'R$300! Já quero raspar de novo.',
+    prize: 'R$300! Já quero raspar.',
   },
   {
     name: 'Sofia C.',
-    prize: 'Tirei R$1000, sensacional!',
+    prize: 'Tirei R$1000!',
   }
 ];
 
@@ -144,12 +144,13 @@ export default function Home() {
         
         {isScratchComplete && (
           <div className="w-full pt-16 space-y-12 transition-all duration-700 opacity-100 scale-100 animate-fadeIn" style={{ animationDelay: '0.5s' }}>
-            <h2 className="text-3xl font-bold mb-8 text-glow">O que nossos sortudos dizem</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <h2 className="text-3xl font-bold mb-8 text-glow">O QUE NOSSOS SORTUDOS DIZEM</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonials.map((testimonial, index) => (
                 <TestimonialScratchCard 
                   key={index} 
-                  {...testimonial} 
+                  {...testimonial}
+                  mainScratchCompleted={isScratchComplete}
                 />
               ))}
             </div>
