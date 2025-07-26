@@ -10,10 +10,9 @@ import { cn } from '@/lib/utils';
 type TestimonialProps = {
   name: string;
   prize: string;
-  mainScratchCompleted: boolean;
 };
 
-export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: TestimonialProps) {
+export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   const scratchCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 320, H = 160;
@@ -56,10 +55,8 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   }, [W, H]);
 
   useEffect(() => {
-    if (mainScratchCompleted) {
-      initCanvas();
-    }
-  }, [mainScratchCompleted, initCanvas]);
+    initCanvas();
+  }, [initCanvas]);
 
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();

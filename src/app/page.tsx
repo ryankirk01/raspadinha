@@ -150,7 +150,6 @@ export default function Home() {
                 <TestimonialScratchCard 
                   key={index} 
                   {...testimonial}
-                  mainScratchCompleted={isScratchComplete}
                 />
               ))}
             </div>
