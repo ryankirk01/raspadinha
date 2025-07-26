@@ -75,50 +75,61 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
     }
   }, [isRevealed]);
 
-  const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
+ const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = false;
-    if (e.nativeEvent instanceof MouseEvent) {
-      isDrawing.current = true;
-    }
     if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-      const touch = e.nativeEvent.touches[0];
-      touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+        const touch = e.nativeEvent.touches[0];
+        touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    } else if (e.nativeEvent instanceof MouseEvent) {
+        isDrawing.current = true;
     }
   };
   
-  const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleEnd = () => {
+    if (isDrawing.current) {
+        checkRevealed();
+    }
     isDrawing.current = false;
     touchStartPos.current = null;
-    checkRevealed();
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (isRevealed) return;
-    
-    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
+
+    let currentX: number, currentY: number;
+
+    if (e.nativeEvent instanceof TouchEvent) {
+        if (e.nativeEvent.touches.length !== 1) return;
         if (!touchStartPos.current) return;
         
         const touch = e.nativeEvent.touches[0];
-        const dx = touch.clientX - touchStartPos.current.x;
-        const dy = touch.clientY - touchStartPos.current.y;
+        currentX = touch.clientX;
+        currentY = touch.clientY;
+
+        const dx = currentX - touchStartPos.current.x;
+        const dy = currentY - touchStartPos.current.y;
 
         if (!isDrawing.current) {
-            if (Math.abs(dy) > 5) {
-                // It's a scroll, not a draw. Do nothing.
-                 touchStartPos.current = null;
+            if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 5) {
+                // Vertical scroll detected, cancel drawing for this touch.
+                touchStartPos.current = null;
                 return;
             }
             if (Math.abs(dx) > 5) {
+                // Horizontal movement detected, start drawing.
                 isDrawing.current = true;
+                e.preventDefault(); // Prevent page scroll when drawing horizontally
             }
         }
+    } else if (e.nativeEvent instanceof MouseEvent) {
+        if (!isDrawing.current) return;
+        currentX = e.nativeEvent.clientX;
+        currentY = e.nativeEvent.clientY;
+    } else {
+        return;
     }
 
     if (!isDrawing.current) return;
-    
-    if ('touches' in e.nativeEvent) {
-      e.preventDefault();
-    }
   
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -126,13 +137,10 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
     if (!ctx) return;
 
     const rect = canvas.getBoundingClientRect();
-    const clientX = 'touches' in e.nativeEvent ? e.nativeEvent.touches[0].clientX : e.nativeEvent.clientX;
-    const clientY = 'touches' in e.nativeEvent ? e.nativeEvent.touches[0].clientY : e.nativeEvent.clientY;
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const x = currentX - rect.left;
+    const y = currentY - rect.top;
   
     scratch(ctx, x, y);
-    checkRevealed();
   };
 
   return (
@@ -167,7 +175,7 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
           height={H}
           className={cn(
             "absolute top-0 left-0 w-full h-full cursor-crosshair rounded-md transition-opacity duration-700",
-            (isRevealed && mainScratchCompleted) ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'
           )}
         />
       </CardContent>
