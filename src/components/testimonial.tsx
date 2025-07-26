@@ -45,8 +45,10 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   }, []);
 
   useEffect(() => {
-    initCanvas();
-  }, [initCanvas]);
+    if (mainScratchCompleted) {
+      initCanvas();
+    }
+  }, [initCanvas, mainScratchCompleted]);
 
   const scratch = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
