@@ -18,6 +18,7 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   const W = 280, H = 140;
   const isDrawing = useRef(false);
   const touchStartPos = useRef<{ x: number, y: number } | null>(null);
+  const touchMovePos = useRef<{ x: number, y: number } | null>(null);
 
 
   const initCanvas = useCallback(() => {
@@ -77,6 +78,7 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
 
  const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = false;
+    touchMovePos.current = null;
     if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
         const touch = e.nativeEvent.touches[0];
         touchStartPos.current = { x: touch.clientX, y: touch.clientY };
@@ -91,6 +93,7 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
     }
     isDrawing.current = false;
     touchStartPos.current = null;
+    touchMovePos.current = null;
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -106,21 +109,23 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
         currentX = touch.clientX;
         currentY = touch.clientY;
 
-        const dx = currentX - touchStartPos.current.x;
-        const dy = currentY - touchStartPos.current.y;
-
+        if (!isDrawing.current && !touchMovePos.current) {
+          touchMovePos.current = { x: currentX, y: currentY };
+        }
+        
         if (!isDrawing.current) {
-            if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 5) {
-                // Vertical scroll detected, cancel drawing for this touch.
+            const dx = currentX - touchStartPos.current.x;
+            const dy = currentY - touchStartPos.current.y;
+            
+            if (Math.abs(dy) > 5 && Math.abs(dy) > Math.abs(dx)) {
                 touchStartPos.current = null;
                 return;
             }
             if (Math.abs(dx) > 5) {
-                // Horizontal movement detected, start drawing.
                 isDrawing.current = true;
-                e.preventDefault(); // Prevent page scroll when drawing horizontally
             }
         }
+
     } else if (e.nativeEvent instanceof MouseEvent) {
         if (!isDrawing.current) return;
         currentX = e.nativeEvent.clientX;
@@ -131,6 +136,10 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
 
     if (!isDrawing.current) return;
   
+    if ('touches' in e.nativeEvent) {
+      e.preventDefault();
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -157,18 +166,17 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
         onTouchMove={handleMove}
         onTouchEnd={handleEnd}
       >
-        {mainScratchCompleted && (
-          <div className={cn(
-            "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500",
-            isRevealed ? "opacity-100" : "opacity-0"
-          )}>
-            <div className="flex justify-center text-yellow-400 mb-1">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-            </div>
-            <p className="text-lg font-bold text-primary">{name}</p>
-            <p className="text-foreground/80 italic text-sm">"{prize}"</p>
+        <div className={cn(
+          "absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500",
+          isRevealed ? "opacity-100" : "opacity-0"
+        )}>
+          <div className="flex justify-center text-yellow-400 mb-1">
+            {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
           </div>
-        )}
+          <p className="text-lg font-bold text-primary">{name}</p>
+          <p className="text-foreground/80 italic text-sm">"{prize}"</p>
+        </div>
+
         <canvas
           ref={canvasRef}
           width={W}
