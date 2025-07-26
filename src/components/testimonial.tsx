@@ -23,7 +23,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
 
   return (
     <Card 
-      className="w-full max-w-[320px] mx-auto bg-card/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30 rounded-xl overflow-hidden"
+      className="w-full max-w-[320px] mx-auto bg-black/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30 rounded-xl overflow-hidden"
     >
       <CardContent 
         className="relative w-full h-full p-6 flex flex-col items-center justify-center text-center"

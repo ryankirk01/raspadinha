@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -22,7 +23,7 @@ export function Countdown() {
   };
 
   return (
-    <div className="bg-primary/20 border border-primary text-primary px-6 py-3 rounded-full shadow-lg">
+    <div className="bg-black/30 backdrop-blur-sm border border-primary text-primary px-6 py-3 rounded-full shadow-lg">
       <p className="text-lg md:text-xl font-bold">
         Sua Sorte Acaba em: <span className="font-black tabular-nums tracking-wider">{formatTime(timeLeft)}</span>
       </p>
