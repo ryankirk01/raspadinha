@@ -84,24 +84,19 @@ export default function Home() {
             <ScratchProgress progress={scratchProgress} />
           </div>
           
-          <div className={cn("transition-all duration-500 flex flex-col items-center text-center", !isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 h-0 pointer-events-none")}>
-            <div className="animate-float w-24 h-24 relative flex items-center justify-center">
-              <div className="absolute w-16 h-16 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full blur-xl opacity-50"></div>
-              <div
-                className="w-16 h-16 transform rotate-45 bg-gradient-to-br from-yellow-200 to-amber-400"
-                style={{
-                  clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
-                  boxShadow: '0 0 20px rgba(255, 215, 0, 0.7)'
-                }}
-              >
-                 <div
-                  className="w-full h-full"
-                  style={{
-                    background: 'linear-gradient(45deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)',
-                  }}
-                 ></div>
+          <div className={cn("w-full transition-all duration-500 flex flex-col items-center text-center", !isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 h-0 pointer-events-none")}>
+            <div className="relative w-full overflow-hidden bg-gradient-to-r from-primary via-yellow-400 to-amber-600 py-2 my-2 rounded-md shadow-lg">
+                <div className="flex animate-marquee whitespace-nowrap">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="flex items-center mx-4">
+                      <span className="text-md font-black text-black uppercase">Raspe para ganhar</span>
+                      <Star className="w-4 h-4 mx-2 text-black fill-current" />
+                      <span className="text-md font-black text-black uppercase">Sorte instantânea</span>
+                       <Star className="w-4 h-4 mx-2 text-black fill-current" />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
             <p className="font-bold text-lg mt-2 text-glow">Toque no cartão para revelar seu prêmio!</p>
           </div>
         </div>
@@ -138,20 +133,6 @@ export default function Home() {
         </div>
         
         <div className="w-full pt-16 space-y-12">
-          <div className="relative w-full overflow-hidden bg-gradient-to-r from-primary via-yellow-400 to-amber-600 py-3 transform -skew-y-2 shadow-lg">
-            <div className="flex animate-marquee whitespace-nowrap">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="flex items-center mx-4">
-                  <span className="text-2xl font-black text-black uppercase">PRÊMIOS INSTANTÂNEOS</span>
-                  <Star className="w-6 h-6 mx-4 text-black fill-current" />
-                  <span className="text-2xl font-black text-black uppercase">PAGAMENTO RÁPIDO</span>
-                   <Star className="w-6 h-6 mx-4 text-black fill-current" />
-                  <span className="text-2xl font-black text-black uppercase">JOGUE AGORA</span>
-                   <Star className="w-6 h-6 mx-4 text-black fill-current" />
-                </div>
-              ))}
-            </div>
-          </div>
           
           <div className="transform skew-y-2">
              <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
