@@ -30,3 +30,13 @@ export const SecurityIcon = (props: SVGProps<SVGSVGElement>) => (
     <path d="m9 12 2 2 4-4"></path>
   </svg>
 );
+
+export const TreasureChestIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M20 12H4" />
+    <path d="M6 12L5 7h14l-1 5" />
+    <path d="M4 12v6h16v-6" />
+    <path d="M12 12V7" />
+    <path d="M8 7.5a4 4 0 0 1 8 0" />
+  </svg>
+);

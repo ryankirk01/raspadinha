@@ -7,7 +7,7 @@ import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
 import { TestimonialScratchCard } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
-import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
+import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon, TreasureChestIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { Rocket } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -81,7 +81,14 @@ export default function Home() {
               onComplete={handleScratchComplete}
               onUpdate={handleScratchUpdate} 
             />
-             <ScratchProgress progress={scratchProgress} />
+            <ScratchProgress progress={scratchProgress} />
+          </div>
+
+          <div className={cn("transition-all duration-500 flex flex-col items-center text-center", !isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 h-0 pointer-events-none")}>
+            <div className="animate-pulse button-glow rounded-full p-2">
+              <TreasureChestIcon className="w-20 h-20 text-yellow-400" />
+            </div>
+            <p className="font-bold text-lg mt-2 text-glow">Toque no cartão para revelar seu prêmio!</p>
           </div>
         </div>
 
