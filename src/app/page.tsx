@@ -9,7 +9,7 @@ import { TestimonialScratchCard } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
 import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
-import { Rocket } from 'lucide-react';
+import { Rocket, Star } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const testimonials = [
@@ -136,16 +136,33 @@ export default function Home() {
               </AlertDescription>
             </Alert>
         </div>
-
-
-        <div className="w-full pt-16">
-          <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <TestimonialScratchCard key={index} {...testimonial} />
-            ))}
+        
+        <div className="w-full pt-16 space-y-12">
+          <div className="relative w-full overflow-hidden bg-gradient-to-r from-primary via-yellow-400 to-amber-600 py-3 transform -skew-y-2 shadow-lg">
+            <div className="flex animate-marquee whitespace-nowrap">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex items-center mx-4">
+                  <span className="text-2xl font-black text-black uppercase">PRÊMIOS INSTANTÂNEOS</span>
+                  <Star className="w-6 h-6 mx-4 text-black fill-current" />
+                  <span className="text-2xl font-black text-black uppercase">PAGAMENTO RÁPIDO</span>
+                   <Star className="w-6 h-6 mx-4 text-black fill-current" />
+                  <span className="text-2xl font-black text-black uppercase">JOGUE AGORA</span>
+                   <Star className="w-6 h-6 mx-4 text-black fill-current" />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="transform skew-y-2">
+             <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <TestimonialScratchCard key={index} {...testimonial} />
+              ))}
+            </div>
           </div>
         </div>
+
 
         <footer className="w-full flex flex-col items-center space-y-4 pt-12 border-t border-white/10 animate-fadeIn" style={{ animationDelay: '1.6s' }}>
           <div className="flex items-center space-x-6">
