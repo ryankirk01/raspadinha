@@ -9,15 +9,17 @@ import { cn } from '@/lib/utils';
 type TestimonialProps = {
   name: string;
   prize: string;
+  mainScratchCompleted: boolean;
 };
 
-export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
+export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: TestimonialProps) {
   const scratchCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 280, H = 140;
   
   const isDrawing = useRef(false);
-  const lastPos = useRef<{ x: number, y: number } | null>(null);
+  const touchStartPos = useRef<{ x: number, y: number } | null>(null);
+  const hasScrolled = useRef(false);
 
   const initCanvas = useCallback(() => {
     const canvas = scratchCanvasRef.current;
@@ -87,21 +89,52 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   }, [isRevealed]);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    isDrawing.current = true;
-    lastPos.current = getPosition(e);
+    isDrawing.current = false;
+    hasScrolled.current = false;
+
+    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
+      const touch = e.nativeEvent.touches[0];
+      touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    } else if (e.nativeEvent instanceof MouseEvent) {
+      isDrawing.current = true;
+    }
   };
   
   const handleEnd = () => {
     isDrawing.current = false;
-    lastPos.current = null;
-    checkRevealed();
+    touchStartPos.current = null;
+    if (!hasScrolled.current) {
+        checkRevealed();
+    }
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing.current) return;
-    
-    e.preventDefault();
+    if (hasScrolled.current) return;
 
+    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
+      if (!touchStartPos.current) return;
+
+      const touch = e.nativeEvent.touches[0];
+      const dx = touch.clientX - touchStartPos.current.x;
+      const dy = touch.clientY - touchStartPos.current.y;
+      
+      if (!isDrawing.current) {
+        if (Math.abs(dy) > 5) {
+          hasScrolled.current = true;
+          touchStartPos.current = null;
+          return;
+        }
+        if (Math.abs(dx) > 5) {
+          isDrawing.current = true;
+        }
+      }
+    }
+
+    if (!isDrawing.current) return;
+    if ('touches' in e.nativeEvent) {
+        e.preventDefault();
+    }
+    
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -110,7 +143,6 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
     const currentPos = getPosition(e);
     if (currentPos) {
       scratch(ctx, currentPos.x, currentPos.y);
-      lastPos.current = currentPos;
     }
   };
 
@@ -140,7 +172,7 @@ export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
         </div>
 
         <canvas
-          ref={canvasRef}
+          ref={scratchCanvasRef}
           width={W}
           height={H}
           className={cn(
