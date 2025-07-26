@@ -7,7 +7,7 @@ import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
 import { TestimonialScratchCard } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
-import { CoinsIcon, CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
+import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { Rocket } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -83,11 +83,24 @@ export default function Home() {
             />
             <ScratchProgress progress={scratchProgress} />
           </div>
-
+          
           <div className={cn("transition-all duration-500 flex flex-col items-center text-center", !isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 h-0 pointer-events-none")}>
-            <div className="animate-pulse rounded-full p-2 relative overflow-hidden">
-              <CoinsIcon className="w-20 h-20 text-yellow-400" />
-              <div className="absolute inset-0 animate-shimmer rounded-full"></div>
+            <div className="animate-float w-24 h-24 relative flex items-center justify-center">
+              <div className="absolute w-16 h-16 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full blur-xl opacity-50"></div>
+              <div
+                className="w-16 h-16 transform rotate-45 bg-gradient-to-br from-yellow-200 to-amber-400"
+                style={{
+                  clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
+                  boxShadow: '0 0 20px rgba(255, 215, 0, 0.7)'
+                }}
+              >
+                 <div
+                  className="w-full h-full"
+                  style={{
+                    background: 'linear-gradient(45deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)',
+                  }}
+                 ></div>
+              </div>
             </div>
             <p className="font-bold text-lg mt-2 text-glow">Toque no cartão para revelar seu prêmio!</p>
           </div>
