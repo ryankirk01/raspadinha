@@ -7,7 +7,7 @@ import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
 import { TestimonialScratchCard } from '@/components/testimonial';
 import { Button } from '@/components/ui/button';
-import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon } from '@/components/icons';
+import { CreditCardIcon, GooglePayIcon, PixIcon, SecurityIcon, CoinsIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { Rocket, Star } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -143,14 +143,11 @@ export default function Home() {
         </div>
         
         <div className="w-full pt-16 space-y-12">
-          
-          <div className="transform skew-y-2">
-             <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
-                <TestimonialScratchCard key={index} {...testimonial} />
-              ))}
-            </div>
+           <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0.8s' }}>O que nossos sortudos dizem</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <TestimonialScratchCard key={index} {...testimonial} />
+            ))}
           </div>
         </div>
 
