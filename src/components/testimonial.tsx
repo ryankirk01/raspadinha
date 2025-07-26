@@ -9,17 +9,15 @@ import { cn } from '@/lib/utils';
 type TestimonialProps = {
   name: string;
   prize: string;
-  mainScratchCompleted: boolean;
 };
 
-export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: TestimonialProps) {
+export function TestimonialScratchCard({ name, prize }: TestimonialProps) {
   const scratchCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   const W = 280, H = 140;
-  
+
   const isDrawing = useRef(false);
-  const touchStartPos = useRef<{ x: number, y: number } | null>(null);
-  const hasScrolled = useRef(false);
+  const lastPos = useRef<{ x: number, y: number } | null>(null);
 
   const initCanvas = useCallback(() => {
     const canvas = scratchCanvasRef.current;
@@ -47,7 +45,7 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   useEffect(() => {
     initCanvas();
   }, [initCanvas]);
-
+  
   const getPosition = (e: React.MouseEvent | React.TouchEvent) => {
     const canvas = scratchCanvasRef.current;
     if (!canvas) return null;
@@ -60,12 +58,22 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
     };
   };
 
-  const scratch = (ctx: CanvasRenderingContext2D, x: number, y: number) => {
+  const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
+    if (!lastPos.current) {
+        lastPos.current = { x, y };
+        return;
+    }
     ctx.beginPath();
-    ctx.arc(x, y, 20, 0, 2 * Math.PI, true);
-    ctx.fill();
-  };
-
+    ctx.moveTo(lastPos.current.x, lastPos.current.y);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 40;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    lastPos.current = { x, y };
+  }, []);
+  
   const checkRevealed = useCallback(() => {
     if (isRevealed) return;
     const canvas = scratchCanvasRef.current;
@@ -89,50 +97,24 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   }, [isRevealed]);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    isDrawing.current = false;
-    hasScrolled.current = false;
-
-    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-      const touch = e.nativeEvent.touches[0];
-      touchStartPos.current = { x: touch.clientX, y: touch.clientY };
-    } else if (e.nativeEvent instanceof MouseEvent) {
-      isDrawing.current = true;
+    isDrawing.current = true;
+    const pos = getPosition(e);
+    if (pos) {
+      lastPos.current = pos;
     }
   };
   
   const handleEnd = () => {
     isDrawing.current = false;
-    touchStartPos.current = null;
-    if (!hasScrolled.current) {
-        checkRevealed();
-    }
+    lastPos.current = null;
+    checkRevealed();
   };
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (hasScrolled.current) return;
+    if (!isDrawing.current || isRevealed) return;
 
-    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-      if (!touchStartPos.current) return;
-
-      const touch = e.nativeEvent.touches[0];
-      const dx = touch.clientX - touchStartPos.current.x;
-      const dy = touch.clientY - touchStartPos.current.y;
-      
-      if (!isDrawing.current) {
-        if (Math.abs(dy) > 5) {
-          hasScrolled.current = true;
-          touchStartPos.current = null;
-          return;
-        }
-        if (Math.abs(dx) > 5) {
-          isDrawing.current = true;
-        }
-      }
-    }
-
-    if (!isDrawing.current) return;
     if ('touches' in e.nativeEvent) {
-        e.preventDefault();
+      e.preventDefault();
     }
     
     const canvas = scratchCanvasRef.current;
@@ -151,7 +133,8 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
       className="w-[280px] h-[140px] mx-auto bg-card/50 backdrop-blur-sm border-primary/20 transform hover:scale-105 hover:border-primary transition-all duration-300 shadow-lg hover:shadow-primary/30"
     >
       <CardContent 
-        className="relative w-full h-full p-0 flex items-center justify-center text-center touch-none"
+        className="relative w-full h-full p-0 flex items-center justify-center text-center"
+        style={{ touchAction: 'none' }}
         onMouseDown={handleStart}
         onMouseMove={handleMove}
         onMouseUp={handleEnd}
