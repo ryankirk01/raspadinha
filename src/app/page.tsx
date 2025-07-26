@@ -143,14 +143,19 @@ export default function Home() {
         </div>
         
         {isScratchComplete && (
-          <div className="w-full pt-16 space-y-12 transition-all duration-700 opacity-100 scale-100 animate-fadeIn" style={{ animationDelay: '0.5s' }}>
-            <h2 className="text-3xl font-bold mb-8 text-glow">O QUE NOSSOS SORTUDOS DIZEM</h2>
+          <div className="w-full pt-16 space-y-12">
+            <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0s' }}>O QUE NOSSOS SORTUDOS DIZEM</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonials.map((testimonial, index) => (
-                <TestimonialScratchCard 
-                  key={index} 
-                  {...testimonial}
-                />
+                <div 
+                  key={index}
+                  className="animate-fadeIn" 
+                  style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'both' }}
+                >
+                  <TestimonialScratchCard 
+                    {...testimonial}
+                  />
+                </div>
               ))}
             </div>
           </div>
