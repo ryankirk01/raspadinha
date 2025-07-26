@@ -81,7 +81,8 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
       isDrawing.current = true;
     }
     if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-      touchStartPos.current = { x: e.nativeEvent.touches[0].clientX, y: e.nativeEvent.touches[0].clientY };
+      const touch = e.nativeEvent.touches[0];
+      touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     }
   };
   
@@ -93,23 +94,31 @@ export function TestimonialScratchCard({ name, prize, mainScratchCompleted }: Te
   
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (isRevealed) return;
-
+    
     if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-        if (touchStartPos.current) {
-            const dx = e.nativeEvent.touches[0].clientX - touchStartPos.current.x;
-            const dy = e.nativeEvent.touches[0].clientY - touchStartPos.current.y;
-            if (Math.abs(dy) > 5 && !isDrawing.current) {
-                // It's a scroll, not a draw
+        if (!touchStartPos.current) return;
+        
+        const touch = e.nativeEvent.touches[0];
+        const dx = touch.clientX - touchStartPos.current.x;
+        const dy = touch.clientY - touchStartPos.current.y;
+
+        if (!isDrawing.current) {
+            if (Math.abs(dy) > 5) {
+                // It's a scroll, not a draw. Do nothing.
+                 touchStartPos.current = null;
                 return;
             }
-            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+            if (Math.abs(dx) > 5) {
                 isDrawing.current = true;
-                e.preventDefault();
             }
         }
     }
 
     if (!isDrawing.current) return;
+    
+    if ('touches' in e.nativeEvent) {
+      e.preventDefault();
+    }
   
     const canvas = canvasRef.current;
     if (!canvas) return;

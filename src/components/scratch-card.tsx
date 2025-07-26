@@ -145,7 +145,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
       isDrawing.current = true;
     }
     if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-        touchStartPos.current = { x: e.nativeEvent.touches[0].clientX, y: e.nativeEvent.touches[0].clientY };
+        const touch = e.nativeEvent.touches[0];
+        touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     }
   };
   
@@ -160,22 +161,30 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (hasCalledOnComplete.current) return;
     
     if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-        if (touchStartPos.current) {
-            const dx = e.nativeEvent.touches[0].clientX - touchStartPos.current.x;
-            const dy = e.nativeEvent.touches[0].clientY - touchStartPos.current.y;
-            if (Math.abs(dy) > 5 && !isDrawing.current) {
-                // It's a scroll, not a draw
+        if (!touchStartPos.current) return;
+
+        const touch = e.nativeEvent.touches[0];
+        const dx = touch.clientX - touchStartPos.current.x;
+        const dy = touch.clientY - touchStartPos.current.y;
+
+        if (!isDrawing.current) {
+            if (Math.abs(dy) > 5) {
+                // It's a scroll, not a draw. Do nothing.
+                 touchStartPos.current = null; // a scroll action should not trigger drawing
                 return;
             }
-            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+            if (Math.abs(dx) > 5) {
                 isDrawing.current = true;
-                e.preventDefault();
             }
         }
     }
     
     if (!isDrawing.current) return;
-
+    
+    if ('touches' in e.nativeEvent) {
+      e.preventDefault();
+    }
+    
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
