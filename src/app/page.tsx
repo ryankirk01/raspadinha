@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Particles } from '@/components/particles';
 import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
@@ -43,6 +43,18 @@ export default function Home() {
   const [isScratchComplete, setIsScratchComplete] = useState(false);
   const [scratchProgress, setScratchProgress] = useState(0);
 
+  useEffect(() => {
+    if (!isScratchComplete) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [isScratchComplete]);
+
   const handleScratchComplete = () => {
     setIsScratchComplete(true);
     if (window.navigator.vibrate) {
@@ -58,7 +70,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden p-4">
+    <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-x-hidden p-4">
       <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 200 : 100} />
       
       <main className="z-10 flex flex-col items-center justify-center w-full max-w-5xl text-center space-y-8 md:space-y-12 py-16">
