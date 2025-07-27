@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Particles } from '@/components/particles';
 import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
@@ -143,15 +143,15 @@ export default function Home() {
         </div>
         
         {isScratchComplete && (
-          <div className="w-full pt-16 space-y-12">
+           <div className="w-full pt-16 space-y-12">
             <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0s' }}>O QUE NOSSOS SORTUDOS DIZEM</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonials.map((testimonial, index) => (
-                 <TestimonialScratchCard 
-                  key={index}
-                  {...testimonial}
-                  mainScratchCompleted={isScratchComplete}
-                />
+                 <div key={index} className="animate-fadeIn" style={{ animationDelay: `${index * 150}ms`, opacity: 0 }}>
+                    <TestimonialScratchCard 
+                      {...testimonial}
+                    />
+                  </div>
               ))}
             </div>
           </div>

@@ -179,7 +179,6 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
               touchAction.current = 'scroll';
             } else {
               touchAction.current = 'scratch';
-              isDrawing.current = true;
             }
           }
         }
@@ -187,6 +186,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         if (touchAction.current === 'scroll') {
           return;
         }
+        isDrawing.current = true;
     }
     
     if (!isDrawing.current) return;
@@ -350,5 +350,3 @@ export function ScratchProgress({ progress }: { progress: number }) {
     </div>
   )
 }
-
-    
