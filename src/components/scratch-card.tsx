@@ -129,11 +129,11 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
+    document.body.style.overflow = 'hidden';
     const canvas = scratchCanvasRef.current;
     if (canvas && e.nativeEvent instanceof window.TouchEvent) {
       canvas.style.touchAction = 'none';
     }
-    document.body.style.overflow = 'hidden';
   };
 
   const handleEnd = () => {
@@ -141,11 +141,11 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
       checkRevealed(); 
     }
     isDrawing.current = false;
+    document.body.style.overflow = '';
     const canvas = scratchCanvasRef.current;
     if (canvas) {
       canvas.style.touchAction = 'auto';
     }
-    document.body.style.overflow = '';
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
