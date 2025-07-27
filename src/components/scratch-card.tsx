@@ -139,6 +139,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
+    document.body.style.overflow = 'hidden';
   };
 
   const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
@@ -146,6 +147,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         checkRevealed(); 
     }
     isDrawing.current = false;
+    document.body.style.overflow = '';
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -266,9 +268,9 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         />
 
         <div className={cn(
-          "text-center z-10 flex flex-col items-center gap-1 p-4",
+          "text-center z-10 flex flex-col items-center gap-1 p-4 opacity-0",
            "bg-black/40 rounded-lg",
-           shouldAnimatePrize && "animate-prize-reveal"
+           shouldAnimatePrize && "animate-prize-reveal opacity-100"
         )}>
             <Gift className="w-12 h-12 text-yellow-300 drop-shadow-[0_2px_5px_rgba(255,215,0,0.7)]" />
             <h3 className="text-xl font-bold uppercase tracking-wider text-white">
