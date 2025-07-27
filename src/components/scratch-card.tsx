@@ -33,10 +33,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const confettiTriggered = useRef(false);
 
   const particles = useRef<Particle[]>([]);
-  const touchStartPos = useRef<{ x: number, y: number } | null>(null);
-  const touchAction = useRef<'scratch' | 'scroll' | null>(null);
-
-
+  
   const [dimensions, setDimensions] = useState({ W: 350, H: 175 });
 
   const initCanvas = useCallback(() => {
@@ -141,55 +138,18 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-    isDrawing.current = false;
-    touchAction.current = null;
-    if (e.nativeEvent instanceof MouseEvent) {
-      isDrawing.current = true;
-    }
-    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-        const touch = e.nativeEvent.touches[0];
-        touchStartPos.current = { x: touch.clientX, y: touch.clientY };
-    }
+    isDrawing.current = true;
   };
-  
 
   const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
     if (isDrawing.current) {
         checkRevealed(); 
     }
     isDrawing.current = false;
-    touchStartPos.current = null;
-    touchAction.current = null;
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (hasCalledOnComplete.current) return;
-    
-    if (e.nativeEvent instanceof TouchEvent && e.nativeEvent.touches.length === 1) {
-        if (!touchStartPos.current) return;
-
-        const touch = e.nativeEvent.touches[0];
-        const dx = touch.clientX - touchStartPos.current.x;
-        const dy = touch.clientY - touchStartPos.current.y;
-        
-        if (!touchAction.current) {
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist > 10) { // Threshold to decide action
-            if (Math.abs(dy) > Math.abs(dx)) {
-              touchAction.current = 'scroll';
-            } else {
-              touchAction.current = 'scratch';
-            }
-          }
-        }
-
-        if (touchAction.current === 'scroll') {
-          return;
-        }
-        isDrawing.current = true;
-    }
-    
-    if (!isDrawing.current) return;
+    if (hasCalledOnComplete.current || !isDrawing.current) return;
     
     e.preventDefault();
     
@@ -297,7 +257,6 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     <Card 
       ref={containerRef}
       className="w-full max-w-sm h-auto aspect-[2/1] bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)_/_0.4)_0%,_hsl(var(--background))_80%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]"
-      style={{ touchAction: touchAction.current === 'scratch' ? 'none' : 'auto' }}
     >
       <CardContent className="relative w-full h-full p-0 flex items-center justify-center">
         

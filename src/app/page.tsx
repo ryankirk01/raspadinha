@@ -67,7 +67,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-4 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
-          <h1 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter animate-text-glow-pulse">
+          <h1 className="text-5xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter animate-text-glow-pulse">
             SUA SORTE ESTÁ SELADA
           </h1>
           <p className="text-lg md:text-xl text-foreground/90">
