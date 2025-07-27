@@ -1,9 +1,19 @@
 
-'use client';
-
+import type { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { AntiCloningScript } from '@/components/anti-cloning-script';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '900']
+});
+
+export const metadata: Metadata = {
+  title: 'Scratch & Win Bonanza',
+  description: 'Raspe Agora e Ganhe até R$10.000!',
+};
 
 export default function RootLayout({
   children,
@@ -11,15 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-       <head>
-        <title>Scratch & Win Bonanza</title>
-        <meta name="description" content="Raspe Agora e Ganhe até R$10.000!" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-body antialiased select-none">
+    <html lang="pt-BR" className="dark">
+      <body className={`${poppins.className} antialiased select-none`}>
         <AntiCloningScript />
         {children}
         <Toaster />

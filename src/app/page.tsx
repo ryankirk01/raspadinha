@@ -61,16 +61,16 @@ export default function Home() {
     <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-x-hidden p-4">
       <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 200 : 100} />
       
-      <main className="z-10 flex flex-col items-center justify-center w-full max-w-5xl text-center space-y-8 md:space-y-12 py-16">
+      <main className="z-10 flex flex-col items-center justify-center w-full max-w-5xl text-center space-y-6 md:space-y-10 py-12">
         <div className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
           <Countdown />
         </div>
 
-        <div className="space-y-4 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
-          <h1 className="text-5xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter animate-text-glow-pulse">
+        <div className="space-y-3 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter animate-text-glow-pulse">
             SUA SORTE ESTÁ SELADA
           </h1>
-          <p className="text-lg md:text-xl text-foreground/90">
+          <p className="text-md md:text-xl text-foreground/90">
             Raspe e ganhe até <span className="font-bold text-primary">R$10.000!</span>
           </p>
         </div>
@@ -89,15 +89,15 @@ export default function Home() {
                 <div className="flex animate-marquee whitespace-nowrap">
                   {[...Array(2)].map((_, i) => (
                     <div key={i} className="flex items-center mx-4">
-                      <span className="text-md font-black text-black uppercase">Raspe para ganhar</span>
+                      <span className="text-sm md:text-md font-black text-black uppercase">Raspe para ganhar</span>
                       <Star className="w-4 h-4 mx-2 text-black fill-current" />
-                      <span className="text-md font-black text-black uppercase">Sorte instantânea</span>
+                      <span className="text-sm md:text-md font-black text-black uppercase">Sorte instantânea</span>
                        <Star className="w-4 h-4 mx-2 text-black fill-current" />
                     </div>
                   ))}
                 </div>
               </div>
-            <p className="font-bold text-lg mt-2 text-glow">Toque no cartão para revelar seu prêmio!</p>
+            <p className="font-bold text-md mt-2 text-glow">Toque no cartão para revelar seu prêmio!</p>
           </div>
         </div>
 
@@ -115,7 +115,7 @@ export default function Home() {
               size="lg"
               disabled={!isScratchComplete}
               className={cn(
-                "w-full h-16 text-xl md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
+                "w-full h-16 text-lg md:text-2xl font-bold bg-gradient-to-b from-yellow-400 to-amber-600 text-black rounded-lg hover:from-yellow-500 hover:to-amber-700 hover:scale-105 transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
                  isScratchComplete && "animate-pulse button-glow"
               )}
               style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}
@@ -143,9 +143,9 @@ export default function Home() {
         </div>
         
         {isScratchComplete && (
-           <div className="w-full pt-16 space-y-12">
-            <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0s' }}>O QUE NOSSOS SORTUDOS DIZEM</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+           <div className="w-full pt-12 space-y-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-glow animate-fadeIn" style={{ animationDelay: '0s' }}>O QUE NOSSOS SORTUDOS DIZEM</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {testimonials.map((testimonial, index) => (
                  <div key={index} className="animate-fadeIn" style={{ animationDelay: `${index * 150}ms`, opacity: 0 }}>
                     <TestimonialScratchCard 
@@ -157,22 +157,22 @@ export default function Home() {
           </div>
         )}
 
-        <div className="relative w-full overflow-hidden bg-gradient-to-r from-primary via-yellow-400 to-amber-600 py-3 rounded-md shadow-lg mt-16 animate-fadeIn" style={{ animationDelay: '1.2s' }}>
+        <div className="relative w-full overflow-hidden bg-gradient-to-r from-primary via-yellow-400 to-amber-600 py-3 rounded-md shadow-lg mt-12 animate-fadeIn" style={{ animationDelay: '1.2s' }}>
           <div className="flex animate-marquee whitespace-nowrap">
               {[...Array(4)].map((_, i) => (
                   <div key={i} className="flex items-center mx-4">
-                      <span className="text-lg font-black text-black uppercase tracking-wider">PRÊMIOS INSTANTÂNEOS</span>
+                      <span className="text-md md:text-lg font-black text-black uppercase tracking-wider">PRÊMIOS INSTANTÂNEOS</span>
                       <Star className="w-5 h-5 mx-3 text-black fill-current" />
-                      <span className="text-lg font-black text-black uppercase tracking-wider">PAGAMENTO RÁPIDO</span>
+                      <span className="text-md md:text-lg font-black text-black uppercase tracking-wider">PAGAMENTO RÁPIDO</span>
                        <Star className="w-5 h-5 mx-3 text-black fill-current" />
-                       <span className="text-lg font-black text-black uppercase tracking-wider">JOGUE AGORA</span>
+                       <span className="text-md md:text-lg font-black text-black uppercase tracking-wider">JOGUE AGORA</span>
                        <Star className="w-5 h-5 mx-3 text-black fill-current" />
                   </div>
               ))}
           </div>
         </div>
 
-        <footer className="w-full flex flex-col items-center space-y-4 pt-12 border-t border-white/10 animate-fadeIn" style={{ animationDelay: '1.6s' }}>
+        <footer className="w-full flex flex-col items-center space-y-4 pt-8 border-t border-white/10 animate-fadeIn" style={{ animationDelay: '1.6s' }}>
           <div className="flex items-center space-x-6">
             <PixIcon className="h-8 w-auto text-foreground/80 hover:text-primary transition-colors" />
             <CreditCardIcon className="h-8 w-auto text-foreground/80 hover:text-primary transition-colors" />

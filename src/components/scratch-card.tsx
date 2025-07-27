@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, TouchEvent } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Gift, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -38,13 +38,17 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const initCanvas = useCallback(() => {
     const canvas = scratchCanvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    const { W, H } = dimensions;
+    const { width, height } = container.getBoundingClientRect();
+    setDimensions({ W: width, H: height });
+    canvas.width = width;
+    canvas.height = height;
 
-    const gradient = ctx.createLinearGradient(0, 0, W, H);
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, '#d4af37'); 
     gradient.addColorStop(0.2, '#ffd700');
     gradient.addColorStop(0.4, '#f0e68c');
@@ -53,41 +57,28 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     gradient.addColorStop(1, '#b8860b');
 
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillRect(0, 0, width, height);
     
     ctx.font = 'bold 20px Poppins';
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('RASPE AQUI SUA SORTE', W / 2, H / 2);
+    ctx.fillText('RASPE AQUI SUA SORTE', width / 2, height / 2);
 
 
     ctx.globalCompositeOperation = 'destination-out';
-  }, [dimensions]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (containerRef.current) {
-        const { width } = containerRef.current.getBoundingClientRect();
-        const newW = Math.min(width, 400); // Max width of 400px
-        const newH = newW / 2;
-        setDimensions({ W: newW, H: newH });
-      }
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
     initCanvas();
-
+    window.addEventListener('resize', initCanvas);
+    
     if (typeof Audio !== 'undefined') {
       audioRef.current = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_19d906d09a.mp3');
       audioRef.current.preload = 'auto';
     }
+
+    return () => window.removeEventListener('resize', initCanvas);
   }, [initCanvas]);
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
@@ -136,24 +127,29 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     }
   }, [onComplete, onUpdate, dimensions, playSound, shouldAnimatePrize]);
 
-
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
+    const canvas = scratchCanvasRef.current;
+    if (canvas && e.nativeEvent instanceof window.TouchEvent) {
+      canvas.style.touchAction = 'none';
+    }
     document.body.style.overflow = 'hidden';
   };
 
-  const handleEnd = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleEnd = () => {
     if (isDrawing.current) {
-        checkRevealed(); 
+      checkRevealed(); 
     }
     isDrawing.current = false;
+    const canvas = scratchCanvasRef.current;
+    if (canvas) {
+      canvas.style.touchAction = 'auto';
+    }
     document.body.style.overflow = '';
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (hasCalledOnComplete.current || !isDrawing.current) return;
-    
-    e.preventDefault();
     
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
@@ -184,10 +180,12 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const { W, H } = dimensions;
+    const container = containerRef.current;
+    if (!container) return;
+    const { width, height } = container.getBoundingClientRect();
     
-    canvas.width = W;
-    canvas.height = H;
+    canvas.width = width;
+    canvas.height = height;
 
     const particleCount = 700; 
     const colors = ["#FFD700", "#FFA500", "#FFC400", "#FFFFFF", "#FFD700"];
@@ -198,8 +196,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         const speed = Math.random() * 10 + 4;
         const life = Math.random() * 90 + 90;
         particles.current.push({
-            x: W / 2,
-            y: H / 2,
+            x: width / 2,
+            y: height / 2,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
             radius: Math.random() * 3 + 2,
@@ -252,8 +250,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     return () => {
         cancelAnimationFrame(animationFrameId);
     };
-}, [isRevealed, dimensions]);
-
+}, [isRevealed]);
 
   return (
     <Card 
@@ -264,7 +261,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         
         <canvas
           ref={confettiCanvasRef}
-          className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"
+          className="absolute inset-0 w-full h-full z-20 pointer-events-none"
         />
 
         <div className={cn(
@@ -284,9 +281,10 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
         <canvas
           ref={scratchCanvasRef}
-          width={dimensions.W}
-          height={dimensions.H}
-          className={`absolute top-0 left-0 w-full h-full z-30 cursor-crosshair rounded-md transition-opacity duration-700 ${isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+          className={cn(
+            'absolute inset-0 z-30 cursor-crosshair rounded-md transition-opacity duration-700',
+            isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          )}
           onMouseDown={handleStart}
           onMouseMove={handleMove}
           onMouseUp={handleEnd}
