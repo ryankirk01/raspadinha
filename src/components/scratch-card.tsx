@@ -168,8 +168,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         const dy = touch.clientY - touchStartPos.current.y;
 
         if (!isDrawing.current) {
-            if (Math.abs(dy) > 5) {
-                // It's a scroll, not a draw. Do nothing.
+            if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 5) {
+                // It's a vertical scroll, not a draw. Do nothing.
                  touchStartPos.current = null; // a scroll action should not trigger drawing
                 return;
             }
