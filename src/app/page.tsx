@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Particles } from '@/components/particles';
 import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
@@ -42,18 +42,6 @@ const testimonials = [
 export default function Home() {
   const [isScratchComplete, setIsScratchComplete] = useState(false);
   const [scratchProgress, setScratchProgress] = useState(0);
-
-  useEffect(() => {
-    if (!isScratchComplete) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-
-    return () => {
-      document.body.classList.remove('overflow-hidden');
-    };
-  }, [isScratchComplete]);
 
   const handleScratchComplete = () => {
     setIsScratchComplete(true);
@@ -159,15 +147,11 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-8 text-glow animate-fadeIn" style={{ animationDelay: '0s' }}>O QUE NOSSOS SORTUDOS DIZEM</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonials.map((testimonial, index) => (
-                <div 
+                 <TestimonialScratchCard 
                   key={index}
-                  className="animate-fadeIn" 
-                  style={{ animationDelay: `${index * 150}ms`, animationFillMode: 'both' }}
-                >
-                  <TestimonialScratchCard 
-                    {...testimonial}
-                  />
-                </div>
+                  {...testimonial}
+                  mainScratchCompleted={isScratchComplete}
+                />
               ))}
             </div>
           </div>
