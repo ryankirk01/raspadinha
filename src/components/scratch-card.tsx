@@ -80,6 +80,14 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
     return () => window.removeEventListener('resize', initCanvas);
   }, [initCanvas]);
+
+  useEffect(() => {
+    if (isDrawing.current) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [isDrawing.current]);
   
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
@@ -129,11 +137,6 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
-    document.body.style.overflow = 'hidden';
-    const canvas = scratchCanvasRef.current;
-    if (canvas && e.nativeEvent instanceof window.TouchEvent) {
-      canvas.style.touchAction = 'none';
-    }
   };
 
   const handleEnd = () => {
@@ -141,16 +144,13 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
       checkRevealed(); 
     }
     isDrawing.current = false;
-    document.body.style.overflow = '';
-    const canvas = scratchCanvasRef.current;
-    if (canvas) {
-      canvas.style.touchAction = 'auto';
-    }
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (hasCalledOnComplete.current || !isDrawing.current) return;
     
+    e.preventDefault();
+
     const canvas = scratchCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -282,7 +282,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         <canvas
           ref={scratchCanvasRef}
           className={cn(
-            'absolute inset-0 z-30 cursor-crosshair rounded-md transition-opacity duration-700',
+            'absolute inset-0 z-30 cursor-crosshair rounded-md transition-opacity duration-700 touch-none',
             isRevealed ? 'opacity-0 pointer-events-none' : 'opacity-100'
           )}
           onMouseDown={handleStart}
