@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Particles } from '@/components/particles';
 import { Countdown } from '@/components/countdown';
 import { ScratchCard, ScratchProgress } from '@/components/scratch-card';
@@ -61,17 +61,17 @@ export default function Home() {
     <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-x-hidden p-4">
       <Particles className="absolute inset-0 z-0" quantity={isScratchComplete ? 200 : 100} />
       
-      <main className="z-10 flex flex-col items-center justify-center w-full max-w-5xl text-center space-y-6 md:space-y-10 py-12">
+      <main className="z-10 flex flex-col items-center justify-center w-full max-w-5xl text-center space-y-6 md:space-y-8 py-12">
         <div className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
           <Countdown />
         </div>
 
         <div className="space-y-3 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter animate-text-glow-pulse">
+          <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter animate-text-glow-pulse">
             SUA SORTE ESTÁ SELADA
           </h1>
           <p className="text-md md:text-xl text-foreground/90">
-            Raspe e ganhe até <span className="font-bold text-primary">R$10.000!</span>
+            Raspe e concorra a prêmios <span className="font-bold text-primary">incríveis!</span>
           </p>
         </div>
 
