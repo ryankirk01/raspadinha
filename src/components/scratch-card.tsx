@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useRef, useState, useEffect, useCallback, TouchEvent } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Gift, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -25,7 +25,6 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [shouldAnimatePrize, setShouldAnimatePrize] = useState(false);
   const isDrawing = useRef(false);
   const hasCalledOnComplete = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -35,6 +34,14 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   const particles = useRef<Particle[]>([]);
   
   const [dimensions, setDimensions] = useState({ W: 350, H: 175 });
+  
+  useEffect(() => {
+    if (isDrawing.current) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [isDrawing.current]);
 
   const initCanvas = useCallback(() => {
     const canvas = scratchCanvasRef.current;
@@ -81,14 +88,6 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     return () => window.removeEventListener('resize', initCanvas);
   }, [initCanvas]);
 
-  useEffect(() => {
-    if (isDrawing.current) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-  }, [isDrawing.current]);
-  
   const scratch = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number) => {
     ctx.beginPath();
     ctx.arc(x, y, 35, 0, 2 * Math.PI, true);
@@ -125,15 +124,12 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (percentage > 60) {
       if (!hasCalledOnComplete.current) {
         setIsRevealed(true);
-        if (!shouldAnimatePrize) {
-            setShouldAnimatePrize(true);
-        }
         onComplete();
         playSound();
         hasCalledOnComplete.current = true;
       }
     }
-  }, [onComplete, onUpdate, dimensions, playSound, shouldAnimatePrize]);
+  }, [onComplete, onUpdate, dimensions, playSound]);
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
@@ -165,7 +161,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     scratch(ctx, x, y);
 
     const now = Date.now();
-    if (now - lastCheck.current > 100) { // Check every 100ms
+    if (now - lastCheck.current > 100) { 
         lastCheck.current = now;
         checkRevealed();
     }
@@ -265,9 +261,9 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         />
 
         <div className={cn(
-          "text-center z-10 flex flex-col items-center gap-1 p-4 opacity-0",
+          "text-center z-10 flex flex-col items-center gap-1 p-4 opacity-100",
            "bg-black/40 rounded-lg",
-           shouldAnimatePrize && "animate-prize-reveal opacity-100"
+           isRevealed && "animate-prize-reveal"
         )}>
             <Gift className="w-12 h-12 text-yellow-300 drop-shadow-[0_2px_5px_rgba(255,215,0,0.7)]" />
             <h3 className="text-xl font-bold uppercase tracking-wider text-white">
