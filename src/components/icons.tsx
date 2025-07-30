@@ -30,3 +30,12 @@ export const SecurityIcon = (props: SVGProps<SVGSVGElement>) => (
     <path d="m9 12 2 2 4-4"></path>
   </svg>
 );
+
+export const CloverIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M16.2 3.8a2.7 2.7 0 00-3.8-3.8 2.7 2.7 0 00-3.8 3.8c1 1 2.8 3.8 2.8 3.8L12 12l-1.4-4.6s1.8-2.8 2.8-3.8z" />
+    <path d="M7.8 3.8a2.7 2.7 0 013.8-3.8 2.7 2.7 0 013.8 3.8c-1 1-2.8 3.8-2.8 3.8L12 12l1.4-4.6S10.2 5.2 7.8 3.8z" transform="rotate(90 12 12)" />
+    <path d="M16.2 20.2a2.7 2.7 0 01-3.8 3.8 2.7 2.7 0 01-3.8-3.8c1-1 2.8-3.8 2.8-3.8L12 12l-1.4 4.6s1.8 2.8 2.8 3.8z" transform="rotate(180 12 12)" />
+    <path d="M7.8 20.2a2.7 2.7 0 003.8 3.8 2.7 2.7 0 003.8-3.8c-1-1-2.8-3.8-2.8-3.8L12 12l1.4 4.6s-1.8 2.8-2.8 3.8z" transform="rotate(270 12 12)" />
+  </svg>
+);

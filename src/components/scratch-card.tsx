@@ -3,7 +3,8 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Gift, Sparkles } from 'lucide-react';
+import { CloverIcon } from '@/components/icons';
+import { Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from "@/components/ui/progress"
 
@@ -13,8 +14,9 @@ type Particle = {
   y: number;
   vx: number;
   vy: number;
-  radius: number;
-  color: string;
+  rotation: number;
+  rotationSpeed: number;
+  size: number;
   life: number;
   initialLife: number;
   gravity: number;
@@ -51,9 +53,9 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     if (!ctx) return;
     
     const { width, height } = container.getBoundingClientRect();
-    setDimensions({ W: width, H: height });
     canvas.width = width;
     canvas.height = height;
+    setDimensions({ W: width, H: height });
 
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, '#d4af37'); 
@@ -133,9 +135,11 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
+    document.body.style.overflow = 'hidden';
   };
 
   const handleEnd = () => {
+    document.body.style.overflow = '';
     if (isDrawing.current) {
       checkRevealed(); 
     }
@@ -167,6 +171,19 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     }
   };
   
+  const drawClover = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number, rotation: number) => {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.beginPath();
+    const leafRadius = size / 2.5;
+    const path = new Path2D("M4 14a1 1 0 0 1-1-1 5 5 0 1 1 7.5-4.33A5 5 0 1 1 15 13a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h.5a3 3 0 1 0-5.12-2.12A3 3 0 1 0 4.5 9H5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4z");
+    ctx.scale(size / 12, size / 12); // Scale to desired size
+    ctx.fill(path);
+    ctx.restore();
+  };
+
+
   useEffect(() => {
     if (!isRevealed || confettiTriggered.current) return;
     confettiTriggered.current = true;
@@ -183,21 +200,21 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     canvas.width = width;
     canvas.height = height;
 
-    const particleCount = 700; 
-    const colors = ["#FFD700", "#FFA500", "#FFC400", "#FFFFFF", "#FFD700"];
+    const particleCount = 100;
     particles.current = [];
 
     for (let i = 0; i < particleCount; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 10 + 4;
-        const life = Math.random() * 90 + 90;
+        const speed = Math.random() * 5 + 2;
+        const life = Math.random() * 120 + 120;
         particles.current.push({
             x: width / 2,
-            y: height / 2,
+            y: height,
             vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            radius: Math.random() * 3 + 2,
-            color: colors[Math.floor(Math.random() * colors.length)],
+            vy: -Math.random() * 10 - 5,
+            rotation: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 0.1,
+            size: Math.random() * 15 + 10,
             life: life,
             initialLife: life,
             gravity: 0.15,
@@ -210,22 +227,20 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         if (!ctx || !canvas) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
+        ctx.fillStyle = "#22c55e"; // Green color for clovers
+
         particles.current.forEach((p, index) => {
             p.x += p.vx;
             p.y += p.vy;
             p.vy += p.gravity;
+            p.rotation += p.rotationSpeed;
             p.life -= 1;
             
             const lifeRatio = Math.max(0, p.life / p.initialLife);
-            const radius = p.radius * lifeRatio;
-
-            if (radius > 0) {
-              ctx.beginPath();
-              const alpha = lifeRatio;
-              ctx.globalAlpha = alpha;
-              ctx.arc(p.x, p.y, radius, 0, Math.PI * 2, false);
-              ctx.fillStyle = p.color;
-              ctx.fill();
+            
+            if (p.y < canvas.height && p.life > 0) {
+              ctx.globalAlpha = lifeRatio;
+              drawClover(ctx, p.x, p.y, p.size, p.rotation);
               ctx.globalAlpha = 1;
             }
 
@@ -253,7 +268,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
       ref={containerRef}
       className="w-full max-w-sm h-auto aspect-[2/1] bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)_/_0.4)_0%,_hsl(var(--background))_80%)] p-0 border-2 border-primary shadow-[0_0_30px_hsl(var(--primary)/0.7)]"
     >
-      <CardContent className="relative w-full h-full p-0 flex items-center justify-center">
+      <CardContent className="relative w-full h-full p-0 flex items-center justify-center overflow-hidden">
         
         <canvas
           ref={confettiCanvasRef}
@@ -261,16 +276,16 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         />
 
         <div className={cn(
-          "text-center z-10 flex flex-col items-center gap-1 p-4 opacity-100",
+          "text-center z-10 flex flex-col items-center gap-1 p-4",
            "bg-black/40 rounded-lg",
            isRevealed && "animate-prize-reveal"
         )}>
-            <Gift className="w-12 h-12 text-yellow-300 drop-shadow-[0_2px_5px_rgba(255,215,0,0.7)]" />
+            <CloverIcon className="w-12 h-12 text-green-400 drop-shadow-[0_2px_5px_rgba(34,197,94,0.7)]" />
             <h3 className="text-xl font-bold uppercase tracking-wider text-white">
-                Você Ganhou
+                Sua Sorte Aumentou
             </h3>
-            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-amber-500" style={{ textShadow: '0 0 20px #ffd700' }}>
-                R$100!
+            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-green-300 to-emerald-500" style={{ textShadow: '0 0 20px #22c55e' }}>
+                87%
             </p>
         </div>
 
