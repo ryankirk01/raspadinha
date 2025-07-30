@@ -37,11 +37,12 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
   
   const [dimensions, setDimensions] = useState({ W: 350, H: 175 });
   
-  useEffect(() => {
+   useEffect(() => {
+    const body = document.body;
     if (isDrawing.current) {
-      document.body.style.overflow = 'hidden';
+      body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = '';
+      body.style.overflow = '';
     }
   }, [isDrawing.current]);
 
@@ -135,11 +136,9 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
-    document.body.style.overflow = 'hidden';
   };
 
   const handleEnd = () => {
-    document.body.style.overflow = '';
     if (isDrawing.current) {
       checkRevealed(); 
     }
@@ -176,9 +175,9 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     ctx.translate(x, y);
     ctx.rotate(rotation);
     ctx.beginPath();
-    const leafRadius = size / 2.5;
-    const path = new Path2D("M4 14a1 1 0 0 1-1-1 5 5 0 1 1 7.5-4.33A5 5 0 1 1 15 13a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h.5a3 3 0 1 0-5.12-2.12A3 3 0 1 0 4.5 9H5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H4z");
-    ctx.scale(size / 12, size / 12); // Scale to desired size
+    const path = new Path2D("M14.22.8a2.5 2.5 0 0 0-4.44 0l-.36.65c-1 1.74-1.35 3.93-1.07 5.25l.23.94a1 1 0 0 1-.95 1.25H6.2a1 1 0 0 1-.94-.7l-.23-.93c-.27-1.32-.62-3.51-1.62-5.25L3 1.45a2.5 2.5 0 1 0 4.44 2.1l.36-.65A2.5 2.5 0 0 0 6.2 0H5.5a2.5 2.5 0 0 0-2.5 2.5v.7a2.5 2.5 0 0 0 2.5 2.5h.34a1 1 0 0 1 .95.7l.23.94c.27 1.32.62 3.51 1.62 5.25l.36.65a2.5 2.5 0 1 0-4.44-2.1l-.36.65a2.5 2.5 0 0 0 1.62 4.35h.7a2.5 2.5 0 0 0 2.5-2.5v-.34a1 1 0 0 1 .7-.95l.94-.23c1.32-.27 3.51-.62 5.25-1.62l.65-.36a2.5 2.5 0 1 0-2.1-4.44l-.65.36c-1.74 1-3.93 1.35-5.25 1.07l-.94-.23a1 1 0 0 1-1.25.95v1.43a1 1 0 0 1-.7.94l-.93.23c-1.32.27-3.51.62-5.25 1.62l-.65.36a2.5 2.5 0 1 0 2.1 4.44l.65-.36c1-1.74 1.35-3.93 1.07-5.25l-.23-.94a1 1 0 0 1 .95-1.25h1.43a1 1 0 0 1 .94.7l.23.93c.27 1.32.62 3.51 1.62 5.25l.36.65a2.5 2.5 0 1 0 4.44-2.1l-.36-.65a2.5 2.5 0 0 0-4.35-1.62v-.7a2.5 2.5 0 0 0-2.5-2.5h-.34a1 1 0 0 1-.95-.7l-.23-.94c-.27-1.32-.62-3.51-1.62-5.25l-.36-.65a2.5 2.5 0 1 0 4.44 2.1l.36.65a2.5 2.5 0 0 0 4.35 1.62v.7a2.5 2.5 0 0 0 2.5 2.5h.7a2.5 2.5 0 0 0 2.5-2.5v-.7a2.5 2.5 0 0 0-1.62-4.35l-.65.36c-1.74 1-3.93 1.35-5.25 1.07l-.94-.23a1 1 0 0 1-.7-.95V6.2a1 1 0 0 1 .7-.94l.94-.23c1.32-.27 3.51-.62 5.25-1.62l.65-.36a2.5 2.5 0 1 0-2.1-4.44l-.65.36c-1 1.74-1.35 3.93-1.07 5.25l.23.94a1 1 0 0 1-.95 1.25h-1.43a1 1 0 0 1-.94-.7L12.7 6.2a2.5 2.5 0 0 0-1.62-4.35Z");
+    const scale = size / 24; // SVG is 24x24
+    ctx.scale(scale, scale);
     ctx.fill(path);
     ctx.restore();
   };
