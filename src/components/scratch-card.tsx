@@ -136,6 +136,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
 
   const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
     isDrawing.current = true;
+     const body = document.body;
+    body.style.overflow = 'hidden';
   };
 
   const handleEnd = () => {
@@ -143,6 +145,8 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
       checkRevealed(); 
     }
     isDrawing.current = false;
+    const body = document.body;
+    body.style.overflow = '';
   };
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -175,7 +179,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     ctx.translate(x, y);
     ctx.rotate(rotation);
     ctx.beginPath();
-    const path = new Path2D("M14.22.8a2.5 2.5 0 0 0-4.44 0l-.36.65c-1 1.74-1.35 3.93-1.07 5.25l.23.94a1 1 0 0 1-.95 1.25H6.2a1 1 0 0 1-.94-.7l-.23-.93c-.27-1.32-.62-3.51-1.62-5.25L3 1.45a2.5 2.5 0 1 0 4.44 2.1l.36-.65A2.5 2.5 0 0 0 6.2 0H5.5a2.5 2.5 0 0 0-2.5 2.5v.7a2.5 2.5 0 0 0 2.5 2.5h.34a1 1 0 0 1 .95.7l.23.94c.27 1.32.62 3.51 1.62 5.25l.36.65a2.5 2.5 0 1 0-4.44-2.1l-.36.65a2.5 2.5 0 0 0 1.62 4.35h.7a2.5 2.5 0 0 0 2.5-2.5v-.34a1 1 0 0 1 .7-.95l.94-.23c1.32-.27 3.51-.62 5.25-1.62l.65-.36a2.5 2.5 0 1 0-2.1-4.44l-.65.36c-1.74 1-3.93 1.35-5.25 1.07l-.94-.23a1 1 0 0 1-1.25.95v1.43a1 1 0 0 1-.7.94l-.93.23c-1.32.27-3.51.62-5.25 1.62l-.65.36a2.5 2.5 0 1 0 2.1 4.44l.65-.36c1-1.74 1.35-3.93 1.07-5.25l-.23-.94a1 1 0 0 1 .95-1.25h1.43a1 1 0 0 1 .94.7l.23.93c.27 1.32.62 3.51 1.62 5.25l.36.65a2.5 2.5 0 1 0 4.44-2.1l-.36-.65a2.5 2.5 0 0 0-4.35-1.62v-.7a2.5 2.5 0 0 0-2.5-2.5h-.34a1 1 0 0 1-.95-.7l-.23-.94c-.27-1.32-.62-3.51-1.62-5.25l-.36-.65a2.5 2.5 0 1 0 4.44 2.1l.36.65a2.5 2.5 0 0 0 4.35 1.62v.7a2.5 2.5 0 0 0 2.5 2.5h.7a2.5 2.5 0 0 0 2.5-2.5v-.7a2.5 2.5 0 0 0-1.62-4.35l-.65.36c-1.74 1-3.93 1.35-5.25 1.07l-.94-.23a1 1 0 0 1-.7-.95V6.2a1 1 0 0 1 .7-.94l.94-.23c1.32-.27 3.51-.62 5.25-1.62l.65-.36a2.5 2.5 0 1 0-2.1-4.44l-.65.36c-1 1.74-1.35 3.93-1.07 5.25l.23.94a1 1 0 0 1-.95 1.25h-1.43a1 1 0 0 1-.94-.7L12.7 6.2a2.5 2.5 0 0 0-1.62-4.35Z");
+    const path = new Path2D("M12.8,2.62A4.5,4.5,0,1,0,8,7.12,4.5,4.5,0,0,0,12.8,2.62ZM11.2,2.62a4.5,4.5,0,1,0,4.8,4.5A4.5,4.5,0,0,0,11.2,2.62ZM8,8.88A4.5,4.5,0,1,0,12.8,13.4,4.5,4.5,0,0,0,8,8.88Zm8-1.76a4.5,4.5,0,1,0,4.8,4.5A4.5,4.5,0,0,0,16,7.12Z M13.6,12.2a4.5,4.5,0,1,0,4.5,4.8A4.5,4.5,0,0,0,13.6,12.2Z");
     const scale = size / 24; // SVG is 24x24
     ctx.scale(scale, scale);
     ctx.fill(path);
@@ -275,7 +279,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         />
 
         <div className={cn(
-          "text-center z-10 flex flex-col items-center gap-1 p-4",
+          "text-center z-10 flex flex-col items-center gap-1 p-4 opacity-100",
            "bg-black/40 rounded-lg",
            isRevealed && "animate-prize-reveal"
         )}>
