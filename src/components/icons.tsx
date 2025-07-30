@@ -31,9 +31,4 @@ export const SecurityIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export const CloverIcon = (props: SVGProps<SVGSVGElement>) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M12.8,2.62A4.5,4.5,0,1,0,8,7.12,4.5,4.5,0,0,0,12.8,2.62ZM11.2,2.62a4.5,4.5,0,1,0,4.8,4.5A4.5,4.5,0,0,0,11.2,2.62ZM8,8.88A4.5,4.5,0,1,0,12.8,13.4,4.5,4.5,0,0,0,8,8.88Zm8-1.76a4.5,4.5,0,1,0,4.8,4.5A4.5,4.5,0,0,0,16,7.12Z"/>
-      <path d="M13.6,12.2a4.5,4.5,0,1,0,4.5,4.8A4.5,4.5,0,0,0,13.6,12.2Z"/>
-    </svg>
-);
+    

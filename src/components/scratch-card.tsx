@@ -3,8 +3,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { CloverIcon } from '@/components/icons';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from "@/components/ui/progress"
 
@@ -174,13 +173,13 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
     }
   };
   
-  const drawClover = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number, rotation: number) => {
+  const drawStar = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number, rotation: number) => {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rotation);
     ctx.beginPath();
-    const path = new Path2D("M12.8,2.62A4.5,4.5,0,1,0,8,7.12,4.5,4.5,0,0,0,12.8,2.62ZM11.2,2.62a4.5,4.5,0,1,0,4.8,4.5A4.5,4.5,0,0,0,11.2,2.62ZM8,8.88A4.5,4.5,0,1,0,12.8,13.4,4.5,4.5,0,0,0,8,8.88Zm8-1.76a4.5,4.5,0,1,0,4.8,4.5A4.5,4.5,0,0,0,16,7.12Z M13.6,12.2a4.5,4.5,0,1,0,4.5,4.8A4.5,4.5,0,0,0,13.6,12.2Z");
-    const scale = size / 24; // SVG is 24x24
+    const path = new Path2D("M12 .587l3.668 7.568L24 9.748l-6 5.845L19.335 24 12 19.917 4.665 24 6 15.593 0 9.748l8.332-1.593L12 .587z");
+    const scale = size / 24; 
     ctx.scale(scale, scale);
     ctx.fill(path);
     ctx.restore();
@@ -230,7 +229,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         if (!ctx || !canvas) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        ctx.fillStyle = "#22c55e"; // Green color for clovers
+        ctx.fillStyle = "#FFD700";
 
         particles.current.forEach((p, index) => {
             p.x += p.vx;
@@ -243,7 +242,7 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
             
             if (p.y < canvas.height && p.life > 0) {
               ctx.globalAlpha = lifeRatio;
-              drawClover(ctx, p.x, p.y, p.size, p.rotation);
+              drawStar(ctx, p.x, p.y, p.size, p.rotation);
               ctx.globalAlpha = 1;
             }
 
@@ -279,15 +278,15 @@ export function ScratchCard({ onComplete, onUpdate }: { onComplete: () => void; 
         />
 
         <div className={cn(
-          "text-center z-10 flex flex-col items-center gap-1 p-4 opacity-100",
+          "text-center z-10 flex flex-col items-center gap-1 p-4",
            "bg-black/40 rounded-lg",
            isRevealed && "animate-prize-reveal"
         )}>
-            <CloverIcon className="w-12 h-12 text-green-400 drop-shadow-[0_2px_5px_rgba(34,197,94,0.7)]" />
+            <Star className="w-12 h-12 text-yellow-400 fill-current drop-shadow-[0_2px_5px_rgba(250,204,21,0.7)]" />
             <h3 className="text-xl font-bold uppercase tracking-wider text-white">
                 Sua Sorte Aumentou
             </h3>
-            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-green-300 to-emerald-500" style={{ textShadow: '0 0 20px #22c55e' }}>
+            <p className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-amber-500" style={{ textShadow: '0 0 20px #facc15' }}>
                 87%
             </p>
         </div>
@@ -323,3 +322,5 @@ export function ScratchProgress({ progress }: { progress: number }) {
     </div>
   )
 }
+
+    
