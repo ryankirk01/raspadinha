@@ -103,7 +103,7 @@ export default function Home() {
 
         <div className={cn("w-full max-w-lg transition-all duration-500 flex flex-col items-center gap-4", isScratchComplete ? "opacity-100 scale-100" : "opacity-0 scale-90 h-0 pointer-events-none")}>
           <a 
-            href="https://raspadinhakings.online/"
+            href="https://raspadinhakings.online/?code=8YKEVDS96D"
             target="_blank" 
             rel="noopener noreferrer" 
             className={cn("w-full", !isScratchComplete && "pointer-events-none cursor-not-allowed")}
@@ -187,5 +187,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
